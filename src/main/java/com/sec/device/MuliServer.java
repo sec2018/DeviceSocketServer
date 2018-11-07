@@ -212,7 +212,7 @@ public class MuliServer implements Runnable{
 			}
 			break;
         default:  
-                answer = "input who， or what， or where";  
+                answer = "input who, or what, or where";
         }  
         return answer;  
     }

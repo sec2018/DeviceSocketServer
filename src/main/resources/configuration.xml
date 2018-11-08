@@ -7,6 +7,7 @@
 
     <environments default="development">
         <environment id="development">
+            <!--性能如果不满足的话考虑用Druid-->
             <transactionManager type="JDBC"></transactionManager>
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.cj.jdbc.Driver" />

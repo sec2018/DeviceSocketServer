@@ -182,7 +182,9 @@ public class MuliServer implements Runnable{
         Connection conn = null;
         PreparedStatement st = null;
         ResultSet rs = null;
-        
+
+        //01命令   3A1A2700001014000019270075F9E35B1F00191979002E4B00001800E3860D0A
+
         switch(question){  
         case "who":  
             answer = "i am wang\n";  

@@ -1,0 +1,323 @@
+char TransferStringToData(char *string, unsigned char *data, unsigned char len)//字符串转换成char型数组，例如  string="1A2B"转换之后 data[0]=0x1A data[1]=0x2B
+{
+  unsigned char i;
+
+  if(len%2)return(0);//字节长度为奇数，返回0
+
+  for(i=0;i<len/2;i++)data[i]=0;//memset(data,0,(len/2)*sizeof(char));
+  for(i=0;i<len;i++)
+  {
+    if((string[i] >= '0') && (string[i] <= '9'))
+      data[i/2] += (string[i]-'0') << (4*(!(i%2)));
+    else if((string[i] >= 'a') && (string[i] <= 'f'))
+      data[i/2] += ((string[i]-'a')+ 10) << (4*(!(i%2))) ;
+    else if((string[i] >= 'A') && (string[i] <= 'F'))
+      data[i/2] += ((string[i]-'A')+ 10) << (4*(!(i%2)));
+    else return (0);//发现非法字符，返回0
+  }
+  return (1);
+}
+
+
+
+
+void TransferDataToString(unsigned char *data, unsigned char *string, unsigned short len)//char型数组转换成字符串，例如 data[0]=0x1A,data[1]=0x2B 转换之后 string="1A2B";
+{
+  unsigned char i;
+
+  for(i=0;i<len;i++)
+  {
+    sprintf((char *)(&string[i*2]), "%02X", data[i]);//x.X转换之后的字符串为大写字母
+  }
+}
+
+
+
+
+
+    /**
+     * 以小端模式将int转成byte[]
+     *
+     * @param value
+     * @return
+     */
+    public static byte[] intToBytesLittle(int value) {
+        byte[] src = new byte[4];
+        src[3] = (byte) ((value >> 24) & 0xFF);
+        src[2] = (byte) ((value >> 16) & 0xFF);
+        src[1] = (byte) ((value >> 8) & 0xFF);
+        src[0] = (byte) (value & 0xFF);
+        return src;
+    }
+
+    /**
+     * 以小端模式将byte[]转成int
+     */
+    public static int bytesToIntLittle(byte[] src, int offset) {
+        int value;
+        value = (int) ((src[offset] & 0xFF)
+                | ((src[offset + 1] & 0xFF) << 8)
+                | ((src[offset + 2] & 0xFF) << 16)
+                | ((src[offset + 3] & 0xFF) << 24));
+        return value;
+    }
+
+
+    /**
+     * 以大端模式将byte[]转成int
+     */
+    public static int bytesToIntBig(byte[] src, int offset) {
+        int value;
+        value = (int) (((src[offset] & 0xFF) << 24)
+                | ((src[offset + 1] & 0xFF) << 16)
+                | ((src[offset + 2] & 0xFF) << 8)
+                | (src[offset + 3] & 0xFF));
+        return value;
+    }
+
+
+    /**
+     * 以大端模式将int转成byte[]
+     */
+    public static byte[] intToBytesBig(int value) {
+        byte[] src = new byte[4];
+        src[0] = (byte) ((value >> 24) & 0xFF);
+        src[1] = (byte) ((value >> 16) & 0xFF);
+        src[2] = (byte) ((value >> 8) & 0xFF);
+        src[3] = (byte) (value & 0xFF);
+        return src;
+    }
+
+    /**
+     * 字符串转换成十六进制字符串
+     * @param String str 待转换的ASCII字符串
+     * @return String 每个Byte之间空格分隔，如: [61 6C 6B]
+     */
+    public static String str2HexStr(String str)
+    {
+
+        char[] chars = "0123456789ABCDEF".toCharArray();
+        StringBuilder sb = new StringBuilder("");
+        byte[] bs = str.getBytes();
+        int bit;
+
+        for (int i = 0; i < bs.length; i++)
+        {
+            bit = (bs[i] & 0x0f0) >> 4;
+            sb.append(chars[bit]);
+            bit = bs[i] & 0x0f;
+            sb.append(chars[bit]);
+            sb.append(' ');
+        }
+        return sb.toString().trim();
+    }
+
+    /**
+     * 十六进制转换字符串
+     * @param String str Byte字符串(Byte之间无分隔符 如:[616C6B])
+     * @return String 对应的字符串
+     */
+    public static String hexStr2Str(String hexStr)
+    {
+        String str = "0123456789ABCDEF";
+        char[] hexs = hexStr.toCharArray();
+        byte[] bytes = new byte[hexStr.length() / 2];
+        int n;
+
+        for (int i = 0; i < bytes.length; i++)
+        {
+            n = str.indexOf(hexs[2 * i]) * 16;
+            n += str.indexOf(hexs[2 * i + 1]);
+            bytes[i] = (byte) (n & 0xff);
+        }
+        return new String(bytes);
+    }
+
+    /**
+     * bytes转换成十六进制字符串
+     * @param byte[] b byte数组
+     * @return String 每个Byte值之间空格分隔
+     */
+    public static String byte2HexStr(byte[] b)
+    {
+        String stmp="";
+        StringBuilder sb = new StringBuilder("");
+        for (int n=0;n<b.length;n++)
+        {
+            stmp = Integer.toHexString(b[n] & 0xFF);
+            sb.append((stmp.length()==1)? "0"+stmp : stmp);
+            sb.append(" ");
+        }
+        return sb.toString().toUpperCase().trim();
+    }
+
+    /**
+     * bytes字符串转换为Byte值
+     * @param String src Byte字符串，每个Byte之间没有分隔符
+     * @return byte[]
+     */
+    public static byte[] hexStr2Bytes(String src)
+    {
+        int m=0,n=0;
+        int l=src.length()/2;
+        System.out.println(l);
+        byte[] ret = new byte[l];
+        for (int i = 0; i < l; i++)
+        {
+            m=i*2+1;
+            n=m+1;
+            ret[i] = Byte.decode("0x" + src.substring(i*2, m) + src.substring(m,n));
+        }
+        return ret;
+    }
+
+    /**
+     * String的字符串转换成unicode的String
+     * @param String strText 全角字符串
+     * @return String 每个unicode之间无分隔符
+     * @throws Exception
+     */
+    public static String strToUnicode(String strText)
+            throws Exception
+    {
+        char c;
+        StringBuilder str = new StringBuilder();
+        int intAsc;
+        String strHex;
+        for (int i = 0; i < strText.length(); i++)
+        {
+            c = strText.charAt(i);
+            intAsc = (int) c;
+            strHex = Integer.toHexString(intAsc);
+            if (intAsc > 128)
+                str.append("\\u" + strHex);
+            else // 低位在前面补00
+                str.append("\\u00" + strHex);
+        }
+        return str.toString();
+    }
+
+    /**
+     * unicode的String转换成String的字符串
+     * @param String hex 16进制值字符串 （一个unicode为2byte）
+     * @return String 全角字符串
+     */
+    public static String unicodeToString(String hex)
+    {
+        int t = hex.length() / 6;
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < t; i++)
+        {
+            String s = hex.substring(i * 6, (i + 1) * 6);
+            // 高位需要补上00再转
+            String s1 = s.substring(2, 4) + "00";
+            // 低位直接转
+            String s2 = s.substring(4);
+            // 将16进制的string转为int
+            int n = Integer.valueOf(s1, 16) + Integer.valueOf(s2, 16);
+            // 将int转换为字符
+            char[] chars = Character.toChars(n);
+            str.append(new String(chars));
+        }
+        return str.toString();
+    }
+
+
+
+     //10进制转16进制
+        public static String IntToHex(int n){
+            char[] ch = new char[20];
+            int nIndex = 0;
+            while ( true ){
+                int m = n/16;
+                int k = n%16;
+                if ( k == 15 )
+                    ch[nIndex] = 'F';
+                else if ( k == 14 )
+                    ch[nIndex] = 'E';
+                else if ( k == 13 )
+                    ch[nIndex] = 'D';
+                else if ( k == 12 )
+                    ch[nIndex] = 'C';
+                else if ( k == 11 )
+                    ch[nIndex] = 'B';
+                else if ( k == 10 )
+                    ch[nIndex] = 'A';
+                else
+                    ch[nIndex] = (char)('0' + k);
+                nIndex++;
+                if ( m == 0 )
+                    break;
+                n = m;
+            }
+            StringBuffer sb = new StringBuffer();
+            sb.append(ch, 0, nIndex);
+            sb.reverse();
+            String strHex = new String("0x");
+            strHex += sb.toString();
+            return strHex;
+        }
+
+        //16进制转10进制
+        public static int HexToInt(String strHex){
+            int nResult = 0;
+            if ( !IsHex(strHex) )
+                return nResult;
+            String str = strHex.toUpperCase();
+            if ( str.length() > 2 ){
+                if ( str.charAt(0) == '0' && str.charAt(1) == 'X' ){
+                    str = str.substring(2);
+                }
+            }
+            int nLen = str.length();
+            for ( int i=0; i<nLen; ++i ){
+                char ch = str.charAt(nLen-i-1);
+                try {
+                    nResult += (GetHex(ch)*GetPower(16, i));
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            return nResult;
+        }
+
+        //计算16进制对应的数值
+        public static int GetHex(char ch) throws Exception{
+            if ( ch>='0' && ch<='9' )
+                return (int)(ch-'0');
+            if ( ch>='a' && ch<='f' )
+                return (int)(ch-'a'+10);
+            if ( ch>='A' && ch<='F' )
+                return (int)(ch-'A'+10);
+            throw new Exception("error param");
+        }
+
+        //计算幂
+        public static int GetPower(int nValue, int nCount) throws Exception{
+            if ( nCount <0 )
+                throw new Exception("nCount can't small than 1!");
+            if ( nCount == 0 )
+                return 1;
+            int nSum = 1;
+            for ( int i=0; i<nCount; ++i ){
+                nSum = nSum*nValue;
+            }
+            return nSum;
+        }
+        //判断是否是16进制数
+        public static boolean IsHex(String strHex){
+            int i = 0;
+            if ( strHex.length() > 2 ){
+                if ( strHex.charAt(0) == '0' && (strHex.charAt(1) == 'X' || strHex.charAt(1) == 'x') ){
+                    i = 2;
+                }
+            }
+            for ( ; i<strHex.length(); ++i ){
+                char ch = strHex.charAt(i);
+                if ( (ch>='0' && ch<='9') || (ch>='A' && ch<='F') || (ch>='a' && ch<='f') )
+                    continue;
+                return false;
+            }
+            return true;
+        }

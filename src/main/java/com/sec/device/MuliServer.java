@@ -183,37 +183,77 @@ public class MuliServer implements Runnable{
         PreparedStatement st = null;
         ResultSet rs = null;
 
-        //01命令   3A1A2700001014000019270075F9E35B1F00191979002E4B00001800E3860D0A
+		//3A1A27000001F7970D0A
+		//3A1A27000010140000752500AEC4E75B1F004E067500121200001500460E0D0A
+		//3A1A2700000412007A70FC2D5FEA05001E00000000000000000061A50D0A
+		//3A1A270000051C001A270000B4591401383938363034313131303138373131333932323593A10D0A
+		//3A1A270000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000D2F40D0A
+		switch(question.substring(10,12)){
+			case "01":
+				answer = "01 command";
+				break;
+			case "10":
+				String[] command10 = Analyse.Command_10(question);
+				String mid = command10[0];
+				String command = command10[1];
+				String type = command10[2];
+				String temperature = command10[3];
+				String voltage = command10[4];
+				String Error = command10[5];
+				String grantgmt = command10[6];
+				String latitude = command10[7];
+				String longitude = command10[8];
+				String status = command10[9];
+				String gsm_signal_level = command10[10];
+//				boolean tempflag = ;
+//				String command10_resp = Analyse.Command_10_Response(mid,tempflag);
+				String command10_resp = Analyse.Command_10_Response("10010",true);
+				answer = command10_resp;
+				break;
+			case "02":
+				String[] command02_receive = Analyse.Command_02_Receive(question);
 
-        switch(question){  
-        case "who":  
-            answer = "i am wang\n";  
-            break;  
-        case "what":  
-            answer = "i am your friend\n";  
-            break;  
-        case "where":  
-            answer = "i come from shanghai\n";  
-            break;  
-        case "hi":  
-            answer = "hello\n";  
-            break;  
-        case "bye":  
-            answer = "88\n";  
-        case "needconn":
-        	String mid = "new_collar0001";
-			SqlSession session = ssf.openSession();
-			try{
-				SysDeviceconf sysDeviceconf = session.selectOne("selectSysDeviceconf", mid);
-				System.out.println(sysDeviceconf.toString());
-				answer = "ok";
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				session.close();
-			}
-			break;
-        default:  
+				String command02_send = Analyse.Command_02_Send();
+				answer = command02_send;
+				break;
+			case "03":
+				String[] command03_receive = Analyse.Command_03_Receive(question);
+
+				String command03_send = Analyse.Command_03_Send();
+				answer = command03_send;
+				break;
+			case "04":
+				String[] command04 = Analyse.Command_04_Receive(question);
+
+				String command04_send = Analyse.Command_04_Send();
+				answer = command04_send;
+				break;
+			case "05":
+				String[] command05 = Analyse.Command_05_Receive(question);
+
+				String command05_send = Analyse.Command_05_Send();
+				answer = command05_send;
+				break;
+			case "06":
+				String[] command06 = Analyse.Command_06_Receive(question);
+
+				String command06_send = Analyse.Command_06_Send();
+				answer = command06_send;
+				break;
+			case "needconn":
+				mid = "new_collar0001";
+				SqlSession session = ssf.openSession();
+				try{
+					SysDeviceconf sysDeviceconf = session.selectOne("selectSysDeviceconf", mid);
+					System.out.println(sysDeviceconf.toString());
+					answer = "ok";
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					session.close();
+				}
+				break;
+			default:
                 answer = "input who, or what, or where";
         }  
         return answer;  

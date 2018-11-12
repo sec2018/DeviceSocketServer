@@ -27,7 +27,7 @@ public class ScheduleCheck {
                     {  
                     	if(MuliServer.heatTimeflag.get(key) == 1) {
                     		//服务端重发数据
-                        	key.write(MuliServer.cs.encode(time+" "+MuliServer.heatTimeMapData.get(key)));
+                        	key.write(MuliServer.cs.encode(MuliServer.heatTimeMapData.get(key)));
                         	MuliServer.heatTimeflag.put(key, 2);
                     	}
                     }else if(MuliServer.heatTimeMap.get(key) != null   

@@ -1,16 +1,20 @@
 package com.sec.device;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class DeviceApplication {
 
 	public static void main(String[] args) {
+		SpringApplication.run(DeviceApplication.class, args);
 		try {
 			MuliServer.Start();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+
 
 //		String str_01 = "3A1A27000001F7970D0A";
 //		String[] command01 = Command_01(str_01);
@@ -59,5 +63,4 @@ public class DeviceApplication {
 //		String[] command06 = Analyse.Command_06_Receive(str_06);
 //		System.out.println(command06.length);
 	}
-
 }

@@ -3,6 +3,8 @@
 <configuration>
     <typeAliases>
         <typeAlias alias="SysDeviceconf" type="com.sec.device.SysDeviceconf"></typeAlias>
+        <typeAlias alias="SysLaytime" type="com.sec.device.SysLaytime"></typeAlias>
+        <typeAlias alias="SysLayconfig" type="com.sec.device.SysLayconfig"></typeAlias>
     </typeAliases>
 
     <environments default="development">
@@ -20,6 +22,8 @@
 
     <mappers>
         <mapper resource="SysDeviceconf.xml"/>
+        <mapper resource="SysLaytime.xml"/>
+        <mapper resource="SysLayconfig.xml"/>
     </mappers>
 
 </configuration>

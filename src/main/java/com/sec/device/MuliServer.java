@@ -153,6 +153,7 @@ public class MuliServer implements Runnable{
 //							if(client != null){
 //								client.close();
 //							}
+							heatTimeMapData.remove(client);
 							ScheduleCheck.ShutDownClient(client);
 						}else{
 							if(answer.indexOf("command10_")>0){
@@ -169,8 +170,6 @@ public class MuliServer implements Runnable{
 								heatTimeMapData.put(client, value);
 								heatTimeflag.put(client, 1);
 								client.write(cs.encode(value));
-								//重发接收
-//								Thread.sleep(5);
 
 //								if(answer.indexOf(",")>-1){
 //									String[] answerlist =  answer.split(",");
@@ -325,9 +324,10 @@ public class MuliServer implements Runnable{
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
+					session.close();
 					answer = "close";
 				} finally {
-					session.close();
+
 				}
 				break;
 			case "03":
@@ -352,11 +352,11 @@ public class MuliServer implements Runnable{
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
+					session.close();
 					answer = "close";
 				} finally {
-					session.close();
+
 				}
-				answer = "close";
 				break;
 			case "04":
 				String[] command04 = Analyse.Command_04_Receive(question);
@@ -375,6 +375,7 @@ public class MuliServer implements Runnable{
 				try{
 					if(1==1){
 						Commandmap.get(mid).remove("com04");
+						redisService.remove("04_"+mid);
 					}
 					if(Commandmap.get(mid).size()==0){
 						answer = "close";
@@ -383,7 +384,6 @@ public class MuliServer implements Runnable{
 					e.printStackTrace();
 					answer = "close";
 				} finally {
-					session.close();
 				}
 				break;
 			case "05":
@@ -398,6 +398,7 @@ public class MuliServer implements Runnable{
 				try{
 					if(1==1){
 						Commandmap.get(mid).remove("com05");
+						redisService.remove("05_"+mid);
 					}
 					if(Commandmap.get(mid).size()==0){
 						answer = "close";
@@ -406,7 +407,6 @@ public class MuliServer implements Runnable{
 					e.printStackTrace();
 					answer = "close";
 				} finally {
-					session.close();
 				}
 				break;
 			case "06":
@@ -431,6 +431,7 @@ public class MuliServer implements Runnable{
 				try{
 					if(1==1){
 						Commandmap.get(mid).remove("com06");
+						redisService.remove("06_"+mid);
 					}
 					if(Commandmap.get(mid).size()==0){
 						answer = "close";
@@ -439,7 +440,6 @@ public class MuliServer implements Runnable{
 					e.printStackTrace();
 					answer = "close";
 				} finally {
-					session.close();
 				}
 				break;
 			default:

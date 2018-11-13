@@ -13,4 +13,10 @@
         updatetime = #{updatetime}
         where mid = #{mid}
     </update>
+
+    <select id="getAllDeviceConfModifiedRecord" resultType="SysDeviceconf">
+        select * from sys_deviceconf
+        where uimodifyflag = 1 AND
+        hardmodifyflag = 0
+    </select>
 </mapper>

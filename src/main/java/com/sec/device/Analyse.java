@@ -180,22 +180,35 @@ public class Analyse {
     }
 
     //02命令发送
-    public static String Command_02_Send(){
-        String mid = "10010";
+    public static String Command_02_Send(SysLayconfig sysLayconfig){
+//        String mid = "10010";
+        String mid = sysLayconfig.getMid();
         //传入12个投药时间对象
         int[] time_all = new int[12];
-        int time_01 = 1541741868;
-        int time_02 = 1541751868;
-        int time_03 = 1541761868;
-        int time_04 = 1541771868;
-        int time_05 = 1541781868;
-        int time_06 = 1541791868;
-        int time_07 = 1541801868;
-        int time_08 = 1541811868;
-        int time_09 = 1541821868;
-        int time_10 = 1541831868;
-        int time_11 = 1541841868;
-        int time_12 = 1541851868;
+//        int time_01 = 1541741868;
+//        int time_02 = 1541751868;
+//        int time_03 = 1541761868;
+//        int time_04 = 1541771868;
+//        int time_05 = 1541781868;
+//        int time_06 = 1541791868;
+//        int time_07 = 1541801868;
+//        int time_08 = 1541811868;
+//        int time_09 = 1541821868;
+//        int time_10 = 1541831868;
+//        int time_11 = 1541841868;
+//        int time_12 = 1541851868;
+        int time_01 = (int)(sysLayconfig.getOne().getTime()/1000);
+        int time_02 = (int)(sysLayconfig.getTwo().getTime()/1000);
+        int time_03 = (int)(sysLayconfig.getThree().getTime()/1000);
+        int time_04 = (int)(sysLayconfig.getFour().getTime()/1000);
+        int time_05 = (int)(sysLayconfig.getFive().getTime()/1000);
+        int time_06 = (int)(sysLayconfig.getSix().getTime()/1000);
+        int time_07 = (int)(sysLayconfig.getSeven().getTime()/1000);
+        int time_08 = (int)(sysLayconfig.getEight().getTime()/1000);
+        int time_09 = (int)(sysLayconfig.getNine().getTime()/1000);
+        int time_10 = (int)(sysLayconfig.getTen().getTime()/1000);
+        int time_11 = (int)(sysLayconfig.getEleven().getTime()/1000);
+        int time_12 = (int)(sysLayconfig.getTwelve().getTime()/1000);
         time_all[0] = time_01;time_all[1] = time_02;time_all[2] = time_03;time_all[3] = time_04;time_all[4] = time_05;time_all[5] = time_06;
         time_all[6] = time_07;time_all[7] = time_08;time_all[8] = time_09;time_all[9] = time_10;time_all[10] = time_11;time_all[11] = time_12;
         String resp = "";
@@ -245,8 +258,10 @@ public class Analyse {
     }
 
     //03命令  发送配置信息
-    public static String Command_03_Send(){
-        String mid = "10010";
+    public static String Command_03_Send(SysDeviceconf sysDeviceconf){
+
+//        String mid = "10010";
+        String mid = sysDeviceconf.getMid();
 
         String resp = "";
         int Mid = Integer.parseInt(mid);
@@ -258,7 +273,8 @@ public class Analyse {
         String midstr = ScheduleCheck.bytesToHexString(v).toUpperCase();
 
         //服务器IP地址
-        String ip = "122.112.252.45";
+//        String ip = "122.112.252.45";
+        String ip = sysDeviceconf.getIp();
         String[] iparr = ip.split("\\.");
         String ipres = "";
         for(int i=0;i<=3;i++){
@@ -267,33 +283,39 @@ public class Analyse {
             ipres += ScheduleCheck.bytesToHexString(v).toUpperCase().substring(6,8);
         }
         //端口号
-        String port = "59999";
-        int Port = Integer.parseInt(port);
+//        String port = "59999";
+//        int Port = Integer.parseInt(port);
+        int Port = sysDeviceconf.getPort();
         Port = Integer.reverseBytes(Port);
         v = ScheduleCheck.intToByteArray(Port);
         String portres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
         //投药信息上传周期
-        int infoupdatecycle = 45;
+//        int infoupdatecycle = 45;
+        int infoupdatecycle = sysDeviceconf.getInfoupdatecycle();
         infoupdatecycle = Integer.reverseBytes(infoupdatecycle);
         v = ScheduleCheck.intToByteArray(infoupdatecycle);
         String infoupdatecycleres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
         //心跳周期
-        int tickcycle = 10000;
+//        int tickcycle = 10000;
+        int tickcycle = sysDeviceconf.getTickcycle();
         tickcycle = Integer.reverseBytes(tickcycle);
         v = ScheduleCheck.intToByteArray(tickcycle);
         String tickcycleres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
         //LED使能
-        int ledenable = 1;
+//        int ledenable = 1;
+        int ledenable = sysDeviceconf.getLedenable();
         ledenable = Integer.reverseBytes(ledenable);
         v = ScheduleCheck.intToByteArray(ledenable);
         String ledenableres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
         //临时投药标志
-        int tempflag = 1;
+//        int tempflag = 1;
+        int tempflag = sysDeviceconf.getTemporaryflag();
         tempflag = Integer.reverseBytes(tempflag);
         v = ScheduleCheck.intToByteArray(tempflag);
         String tempflagres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
         //临时投药时间
-        int tempgmt = 1561123123;
+//        int tempgmt = 1561123123;
+        int tempgmt = (int)(sysDeviceconf.getTemporarygmt().getTime()/1000);
         tempgmt = Integer.reverseBytes(tempgmt);
         v = ScheduleCheck.intToByteArray(tempgmt);
         String tempgmtres = ScheduleCheck.bytesToHexString(v).toUpperCase();
@@ -331,9 +353,7 @@ public class Analyse {
     }
 
     //04命令  发送配置信息
-    public static String Command_04_Send(){
-        String mid = "10010";
-
+    public static String Command_04_Send(String mid){
         String resp = "";
         int Mid = Integer.parseInt(mid);
 
@@ -455,9 +475,7 @@ public class Analyse {
     }
 
     //05命令   发送读取信息寄存器信息
-    public static String Command_05_Send(){
-        String mid = "10010";
-
+    public static String Command_05_Send(String mid){
         String resp = "";
         int Mid = Integer.parseInt(mid);
 
@@ -579,8 +597,7 @@ public class Analyse {
     }
 
     //06命令   发送读取时间寄存器信息
-    public static String Command_06_Send(){
-        String mid = "10010";
+    public static String Command_06_Send(String mid){
 
         String resp = "";
         int Mid = Integer.parseInt(mid);

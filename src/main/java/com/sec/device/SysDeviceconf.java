@@ -3,6 +3,27 @@ package com.sec.device;
 import java.util.Date;
 
 public class SysDeviceconf{
+
+    private Integer id;
+
+    private String mid;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getMid() {
+        return mid;
+    }
+
+    public void setMid(String mid) {
+        this.mid = mid == null ? null : mid.trim();
+    }
+
     private Byte status;
 
     private String swver;

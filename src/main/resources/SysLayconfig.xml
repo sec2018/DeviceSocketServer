@@ -9,4 +9,10 @@
         updatetime =  #{updatetime}
         where mid = #{mid} ORDER by updatetime DESC limit 1
     </update>
+
+    <select id="getAllLayConfigModifiedRecord" resultType="SysLayconfig">
+        select * from sys_layconfig
+        where uimodifyflag = 1 AND
+        hardmodifyflag = 0
+    </select>
 </mapper>

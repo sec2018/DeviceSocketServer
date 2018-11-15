@@ -21,21 +21,33 @@ public class ScheduleCheck {
 					Map.Entry entry = (Map.Entry) iter.next();
                     SocketChannel key = (SocketChannel)entry.getKey();
                     long time = System.currentTimeMillis();
-                   //等待客户端答复，5秒没响应，重发一次，再5秒无反应,即为超时，关闭client
+                   //等待客户端答复，2秒没响应，重发一次，再2秒无反应,即为超时，关闭client
                     if(MuliServer.heatTimeMap.get(key) !=null
                         && time - MuliServer.heatTimeMap.get(key) > 5000  && time - MuliServer.heatTimeMap.get(key) < 10000)
-                    {  
-                    	if(MuliServer.heatTimeflag.get(key) == 1) {
+                    {
+                    	if(MuliServer.heatTimeflag.get(key).split(",")[0].equals("1")) {
                     		//服务端重发数据
-                        	key.write(MuliServer.cs.encode(MuliServer.heatTimeMapData.get(key)));
-                        	MuliServer.heatTimeflag.put(key, 2);
+                            String[] values = MuliServer.heatTimeMapData.get(key).split(",");
+                            String mid = MuliServer.heatTimeflag.get(key).split(",")[1];
+                            String commandkey = "";
+                            for(int i=0;i<values.length;i++){
+                                commandkey = values[i].split("_")[0];
+                                if(MuliServer.Commandmap.get(mid).containsKey(commandkey) && MuliServer.CommandStatusmap.get(mid).get(commandkey) == 1){
+//                                    key.write(MuliServer.cs.encode(MuliServer.heatTimeMapData.get(key)));
+                                    key.write(MuliServer.cs.encode(values[i].split("_")[1]));
+                                    Thread.sleep(50);
+                                }
+                            }
+                        	MuliServer.heatTimeflag.put(key, 2 +","+MuliServer.heatTimeflag.get(key).split(",")[1]);
                     	}
                     }else if(MuliServer.heatTimeMap.get(key) !=null
                             && time - MuliServer.heatTimeMap.get(key) > 10000) {
                     	//服务端重发数据，发第3次，或者不发
 //                        key.write(MuliServer.cs.encode(MuliServer.heatTimeMapData.get(key)));
                         System.out.println(time+" closed");
-//                        if(MuliServer.Commandmap.get(key).isEmpty()){
+
+//                        String mid = MuliServer.heatTimeflag.get(key).split(",")[1];
+//                        if(MuliServer.Commandmap.get(mid).size()==0){
 //                            ShutDownClient(key);
 //                            iter.remove();
 //                        }

@@ -26,8 +26,8 @@ import java.util.*;
 public class MuliServer implements Runnable{
 	
 	private int port = 8888;
-	private int TimeOut = 2000;
-	static Map<Object, Integer> heatTimeflag = new HashMap<Object, Integer>(); 
+	private int TimeOut = 1500;
+	static Map<Object, String> heatTimeflag = new HashMap<Object, String>();
 	static Map<Object, Long> heatTimeMap = new HashMap<Object, Long>();  
 	static Map<Object, String> heatTimeMapData = new HashMap<Object, String>(); 
 	
@@ -39,6 +39,8 @@ public class MuliServer implements Runnable{
 	private Map<String,SocketChannel> clientsMap = new HashMap<String,SocketChannel>();
 	private static SqlSessionFactory ssf = null;
 	static Map<String,Map<String,String>>  Commandmap = new HashMap<String,Map<String,String>>();
+	//1：内存中（未接到答复，等待中），2：响应中   相应完成删除
+	static Map<String,Map<String,Integer>>  CommandStatusmap = new HashMap<String,Map<String,Integer>>();
 //	@Autowired
 //	protected RedisService redisService;
 	//获取的ben对象转为你需要的对象
@@ -155,6 +157,8 @@ public class MuliServer implements Runnable{
 //							}
 							heatTimeMapData.remove(client);
 							ScheduleCheck.ShutDownClient(client);
+						}else if(answer==""){
+
 						}else{
 							if(answer.indexOf("command10_")>0){
 								//10命令
@@ -166,25 +170,16 @@ public class MuliServer implements Runnable{
 							}
 							else{
 								Map<String,String> templist = Commandmap.get(answer);
-								String value = templist.values().toArray()[0].toString();
-								heatTimeMapData.put(client, value);
-								heatTimeflag.put(client, 1);
-								client.write(cs.encode(value));
-
-//								if(answer.indexOf(",")>-1){
-//									String[] answerlist =  answer.split(",");
-//									heatTimeMapData.put(client, answerlist[0]);
-//									heatTimeflag.put(client, 1);
-//									client.write(cs.encode(answerlist[0]));
-//
-//									heatTimeMapData.put(client, answerlist[1]);
-//									heatTimeflag.put(client, 1);
-//									client.write(cs.encode(answerlist[1]));
-//								}else{
-//									heatTimeMapData.put(client, answer);
-//									heatTimeflag.put(client, 1);
-//									client.write(cs.encode(answer));
-//								}
+								String values = "";
+								for(int i=0;i<templist.size();i++){
+									String key = templist.keySet().toArray()[i].toString();
+									String value = templist.values().toArray()[i].toString();
+									values = values+key+"_"+value+",";
+									client.write(cs.encode(value));
+									Thread.sleep(50);
+								}
+								heatTimeMapData.put(client, values.substring(0,values.length()-1));
+								heatTimeflag.put(client, 1+","+answer);
 							}
 						}
 					}
@@ -214,6 +209,7 @@ public class MuliServer implements Runnable{
 		String mid = "";
 		SqlSession session = null;
 		Map<String,String> listtemp = null;
+		Map<String,Integer> listststus = null;
 
 		//3A1A27000001F7970D0A
 		//3A1A27000010140000752500AEC4E75B1F004E067500121200001500460E0D0A
@@ -230,34 +226,32 @@ public class MuliServer implements Runnable{
 				String get05config = ConnectRedisCheckToken("05_"+mid);
 				String get06config = ConnectRedisCheckToken("06_"+mid);
 				listtemp = new HashMap<String,String>();
+				listststus = new HashMap<String,Integer>();
 				if(deviceconfig!=null && deviceconfig!=""){
 					listtemp.put("com03",deviceconfig);
+					listststus.put("com03",1);
 				}
 				if(timeconfig!=null && timeconfig!=""){
 					listtemp.put("com02",timeconfig);
+					listststus.put("com02",1);
 				}
 				if(get04config!=null && get04config!=""){
 					listtemp.put("com04",get04config);
+					listststus.put("com04",1);
 				}
 				if(get05config!=null && get05config!=""){
 					listtemp.put("com05",get05config);
+					listststus.put("com05",1);
 				}
 				if(get06config!=null && get06config!=""){
 					listtemp.put("com06",get06config);
+					listststus.put("com06",1);
 				}
 				Commandmap.put(mid,listtemp);
+				CommandStatusmap.put(mid,listststus);
 				if(listtemp.size()>0){
 					answer = mid;
 				}
-//				if(deviceconfig!=null && deviceconfig!="" && timeconfig!=null && timeconfig!=""){
-//					answer = deviceconfig+","+timeconfig;
-//				}
-//				if(deviceconfig!=null && deviceconfig!="" && (timeconfig==null || timeconfig=="")){
-//					answer = deviceconfig;
-//				}
-//				if((deviceconfig==null || deviceconfig=="") && timeconfig!=null && timeconfig!=""){
-//					answer = timeconfig;
-//				}
 				break;
 			case "10":
 				String[] command10 = Analyse.Command_10(question);
@@ -306,8 +300,8 @@ public class MuliServer implements Runnable{
 				String[] command02_receive = Analyse.Command_02_Receive(question);
 				mid = command02_receive[0];
 				answer = mid;
-				//说明项圈已读取时间配置，删除
-				redisService.remove("time_"+mid);
+				//收到响应
+				CommandStatusmap.get(mid).put("com02",2);
 				//更新数据库
 				session = ssf.openSession();
 				HashMap <String,Object> map_02 = new HashMap<String,Object>();
@@ -317,11 +311,17 @@ public class MuliServer implements Runnable{
 					boolean res02 = session.update("updateLayconfigByMid", map_02) ==1?true:false;
 					session.commit();
 					if(res02){
+						//项圈已读取时间配置，并且数据库已更新，删除
+						redisService.remove("time_"+mid);
 						Commandmap.get(mid).remove("com02");
 					}
 					if(Commandmap.get(mid).size()==0){
 						answer = "close";
+					}else{
+						answer = "";
 					}
+					//响应完成，删除
+					CommandStatusmap.get(mid).remove("com02");
 				} catch (Exception e) {
 					e.printStackTrace();
 					session.close();
@@ -334,8 +334,8 @@ public class MuliServer implements Runnable{
 				String[] command03_receive = Analyse.Command_03_Receive(question);
 				mid = command03_receive[0];
 				answer = mid;
-				//说明项圈已读取基础配置，删除
-				redisService.remove("device_"+mid);
+				//收到响应
+				CommandStatusmap.get(mid).put("com03",2);
 				//更新数据库
 				session = ssf.openSession();
 				HashMap <String,Object> map_03 = new HashMap<String,Object>();
@@ -345,11 +345,17 @@ public class MuliServer implements Runnable{
 					boolean res03 = session.update("updateDeviceconfByMid", map_03) ==1?true:false;
 					session.commit();
 					if(res03){
+						//说明项圈已读取基础配置，并且数据库已更新，删除
+						redisService.remove("device_"+mid);
 						Commandmap.get(mid).remove("com03");
 					}
 					if(Commandmap.get(mid).size()==0){
 						answer = "close";
+					}else{
+						answer = "";
 					}
+					//响应完成，删除
+					CommandStatusmap.get(mid).remove("com03");
 				} catch (Exception e) {
 					e.printStackTrace();
 					session.close();
@@ -370,7 +376,8 @@ public class MuliServer implements Runnable{
 				String ledenable = command04[6];
 				String tempflag = command04[7];
 				String tempgmt = command04[8];
-
+				//收到响应
+				CommandStatusmap.get(mid).put("com04",2);
 				//查询得到命令4后的逻辑
 				try{
 					if(1==1){
@@ -379,7 +386,11 @@ public class MuliServer implements Runnable{
 					}
 					if(Commandmap.get(mid).size()==0){
 						answer = "close";
+					}else{
+						answer = "";
 					}
+					//响应完成，删除
+					CommandStatusmap.get(mid).remove("com04");
 				} catch (Exception e) {
 					e.printStackTrace();
 					answer = "close";
@@ -393,7 +404,8 @@ public class MuliServer implements Runnable{
 				String command_05 = command05[1];
 				String swver = command05[3];
 				String simccid = command05[4];
-
+				//收到响应
+				CommandStatusmap.get(mid).put("com05",2);
 				//查询得到命令5后的逻辑
 				try{
 					if(1==1){
@@ -402,7 +414,11 @@ public class MuliServer implements Runnable{
 					}
 					if(Commandmap.get(mid).size()==0){
 						answer = "close";
+					}else{
+						answer = "";
 					}
+					//响应完成，删除
+					CommandStatusmap.get(mid).remove("com05");
 				} catch (Exception e) {
 					e.printStackTrace();
 					answer = "close";
@@ -426,7 +442,8 @@ public class MuliServer implements Runnable{
 				String time10 = command06[11];
 				String time11 = command06[12];
 				String time12 = command06[13];
-
+				//收到响应
+				CommandStatusmap.get(mid).put("com06",2);
 				//查询得到命令6后的逻辑
 				try{
 					if(1==1){
@@ -435,7 +452,11 @@ public class MuliServer implements Runnable{
 					}
 					if(Commandmap.get(mid).size()==0){
 						answer = "close";
+					}else{
+						answer = "";
 					}
+					//响应完成，删除
+					CommandStatusmap.get(mid).remove("com06");
 				} catch (Exception e) {
 					e.printStackTrace();
 					answer = "close";

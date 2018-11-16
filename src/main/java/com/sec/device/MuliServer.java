@@ -144,7 +144,7 @@ public class MuliServer implements Runnable{
 					long time = System.currentTimeMillis();
                     heatTimeMap.put(client, time);
                     if(receiveText.length() > 0) {
-						String answer = getAnswer(receiveText);  
+						String answer = getAnswer(receiveText);
 						//根据answer判断需要客户端再次握手，发数据
 						if(answer=="close"){
 							//无更新，不回复, 或者是来自客户端的回复，去除redis的key，更新数据库，然后不回复
@@ -201,7 +201,7 @@ public class MuliServer implements Runnable{
 		}
 	}
 	
-	private String getAnswer(String question){  
+	private String getAnswer(String questiontemp){
         String answer = null;  
            
         Connection conn = null;
@@ -217,259 +217,268 @@ public class MuliServer implements Runnable{
 		//3A1A2700000412007A70FC2D5FEA05001E00000000000000000061A50D0A
 		//3A1A270000051C001A270000B4591401383938363034313131303138373131333932323593A10D0A
 		//3A1A270000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000D2F40D0A
-		if(question.length()<12){
+		if(questiontemp.length()<12 && questiontemp.indexOf("3A1A") == -1 && questiontemp.indexOf("0D0A") == -1){
 			System.out.println("your sendding command is wrong...");
 			answer = "";
 		}else{
-			switch(question.substring(10,12)){
-				case "01":
-					answer = "close";
-					mid = Analyse.Command_01(question)[0];
-					String deviceconfig = ConnectRedisCheckToken("device_"+mid);
-					String timeconfig = ConnectRedisCheckToken("time_"+mid);
-					String get04config = ConnectRedisCheckToken("04_"+mid);
-					String get05config = ConnectRedisCheckToken("05_"+mid);
-					String get06config = ConnectRedisCheckToken("06_"+mid);
-					listtemp = new HashMap<String,String>();
-					listststus = new HashMap<String,Integer>();
-					if(deviceconfig!=null && deviceconfig!=""){
-						listtemp.put("com03",deviceconfig);
-						listststus.put("com03",1);
-					}
-					if(timeconfig!=null && timeconfig!=""){
-						listtemp.put("com02",timeconfig);
-						listststus.put("com02",1);
-					}
-					if(get04config!=null && get04config!=""){
-						listtemp.put("com04",get04config);
-						listststus.put("com04",1);
-					}
-					if(get05config!=null && get05config!=""){
-						listtemp.put("com05",get05config);
-						listststus.put("com05",1);
-					}
-					if(get06config!=null && get06config!=""){
-						listtemp.put("com06",get06config);
-						listststus.put("com06",1);
-					}
-					Commandmap.put(mid,listtemp);
-					CommandStatusmap.put(mid,listststus);
-					if(listtemp.size()>0){
+
+			String[] questions = questiontemp.split("0D0A");
+			for (String question:questions) {
+				question = question+"0D0A";
+				switch(question.substring(10,12)){
+					case "01":
+						answer = "close";
+						mid = Analyse.Command_01(question)[0];
+						String deviceconfig = ConnectRedisCheckToken("device_"+mid);
+						String timeconfig = ConnectRedisCheckToken("time_"+mid);
+						String get04config = ConnectRedisCheckToken("04_"+mid);
+						String get05config = ConnectRedisCheckToken("05_"+mid);
+						String get06config = ConnectRedisCheckToken("06_"+mid);
+						listtemp = new HashMap<String,String>();
+						listststus = new HashMap<String,Integer>();
+						if(deviceconfig!=null && deviceconfig!=""){
+							listtemp.put("com03",deviceconfig);
+							listststus.put("com03",1);
+						}
+						if(timeconfig!=null && timeconfig!=""){
+							listtemp.put("com02",timeconfig);
+							listststus.put("com02",1);
+						}
+						if(get04config!=null && get04config!=""){
+							listtemp.put("com04",get04config);
+							listststus.put("com04",1);
+						}
+						if(get05config!=null && get05config!=""){
+							listtemp.put("com05",get05config);
+							listststus.put("com05",1);
+						}
+						if(get06config!=null && get06config!=""){
+							listtemp.put("com06",get06config);
+							listststus.put("com06",1);
+						}
+						Commandmap.put(mid,listtemp);
+						CommandStatusmap.put(mid,listststus);
+						if(listtemp.size()>0){
+							answer = mid;
+						}
+						break;
+					case "10":
+						String[] command10 = Analyse.Command_10(question);
+						mid = command10[0];
+						String command = command10[1];
+						String type = command10[2];
+						String temperature = command10[3];
+						String voltage = command10[4];
+						String Error = command10[5];
+						String grantgmt = command10[6];
+						String latitude = command10[7];
+						String longitude = command10[8];
+						String status = command10[9];
+						String gsm_signal_level = command10[10];
+
+						SysLaytime sysLaytime = new SysLaytime();
+						sysLaytime.setId(0);
+						sysLaytime.setMid(mid);
+						sysLaytime.setLatitude(latitude);
+						sysLaytime.setLongitude(longitude);
+						if(!grantgmt.equals("0")){
+							sysLaytime.setGrantgmt(new Date(Long.valueOf(grantgmt+"000")));
+						}else {
+							sysLaytime.setGrantgmt(new Date());
+						}
+						sysLaytime.setErr(Error);
+						sysLaytime.setVoltage(Double.parseDouble(voltage));
+						sysLaytime.setTemperature(Byte.parseByte(temperature));
+						sysLaytime.setType(Byte.parseByte(type));
+						sysLaytime.setTimegmt(new Date());
+						sysLaytime.setIslay(Byte.parseByte(status));
+						sysLaytime.setSignallevel(Byte.parseByte(gsm_signal_level));
+						sysLaytime.setUpdatetime(new Date());
+
+						session = ssf.openSession();
+						try{
+							boolean res02 = session.insert("insertSysLaytime", sysLaytime) ==1?true:false;
+							session.commit();
+							if(res02){
+								String command10_resp = Analyse.Command_10_Response(mid,true);
+								answer = "command10_"+command10_resp;
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						} finally {
+							session.close();
+						}
+						break;
+					case "02":
+						String[] command02_receive = Analyse.Command_02_Receive(question);
+						mid = command02_receive[0];
 						answer = mid;
-					}
-					break;
-				case "10":
-					String[] command10 = Analyse.Command_10(question);
-					mid = command10[0];
-					String command = command10[1];
-					String type = command10[2];
-					String temperature = command10[3];
-					String voltage = command10[4];
-					String Error = command10[5];
-					String grantgmt = command10[6];
-					String latitude = command10[7];
-					String longitude = command10[8];
-					String status = command10[9];
-					String gsm_signal_level = command10[10];
+						//收到响应
+						CommandStatusmap.get(mid).put("com02",2);
+						//更新数据库
+						session = ssf.openSession();
+						HashMap <String,Object> map_02 = new HashMap<String,Object>();
+						map_02.put("mid",mid);
+						map_02.put("updatetime",new Date());
+						try{
+							boolean res02 = session.update("updateLayconfigByMid", map_02) ==1?true:false;
+							session.commit();
+							if(res02){
+								//项圈已读取时间配置，并且数据库已更新，删除
+								redisService.remove("time_"+mid);
+								Commandmap.get(mid).remove("com02");
+							}
+							if(Commandmap.get(mid).size()==0){
+								answer = "close";
+							}else{
+								answer = "";
+							}
+							//响应完成，删除
+							CommandStatusmap.get(mid).remove("com02");
+						} catch (Exception e) {
+							e.printStackTrace();
+							session.close();
+							answer = "close";
+						} finally {
 
-					SysLaytime sysLaytime = new SysLaytime();
-					sysLaytime.setId(0);
-					sysLaytime.setMid(mid);
-					sysLaytime.setLatitude(latitude);
-					sysLaytime.setLongitude(longitude);
-					sysLaytime.setGrantgmt(new Date(Long.valueOf(grantgmt+"000")));
-					sysLaytime.setErr(Error);
-					sysLaytime.setVoltage(Double.parseDouble(voltage));
-					sysLaytime.setTemperature(Byte.parseByte(temperature));
-					sysLaytime.setType(Byte.parseByte(type));
-					sysLaytime.setTimegmt(new Date());
-					sysLaytime.setIslay(Byte.parseByte(status));
-					sysLaytime.setSignallevel(Byte.parseByte(gsm_signal_level));
-					sysLaytime.setUpdatetime(new Date());
+						}
+						break;
+					case "03":
+						String[] command03_receive = Analyse.Command_03_Receive(question);
+						mid = command03_receive[0];
+						answer = mid;
+						//收到响应
+						CommandStatusmap.get(mid).put("com03",2);
+						//更新数据库
+						session = ssf.openSession();
+						HashMap <String,Object> map_03 = new HashMap<String,Object>();
+						map_03.put("mid",mid);
+						map_03.put("updatetime",new Date());
+						try{
+							boolean res03 = session.update("updateDeviceconfByMid", map_03) ==1?true:false;
+							session.commit();
+							if(res03){
+								//说明项圈已读取基础配置，并且数据库已更新，删除
+								redisService.remove("device_"+mid);
+								Commandmap.get(mid).remove("com03");
+							}
+							if(Commandmap.get(mid).size()==0){
+								answer = "close";
+							}else{
+								answer = "";
+							}
+							//响应完成，删除
+							CommandStatusmap.get(mid).remove("com03");
+						} catch (Exception e) {
+							e.printStackTrace();
+							session.close();
+							answer = "close";
+						} finally {
 
-					session = ssf.openSession();
-					try{
-						boolean res02 = session.insert("insertSysLaytime", sysLaytime) ==1?true:false;
-						session.commit();
-						if(res02){
-							String command10_resp = Analyse.Command_10_Response(mid,true);
-							answer = "command10_"+command10_resp;
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					} finally {
-						session.close();
-					}
-					break;
-				case "02":
-					String[] command02_receive = Analyse.Command_02_Receive(question);
-					mid = command02_receive[0];
-					answer = mid;
-					//收到响应
-					CommandStatusmap.get(mid).put("com02",2);
-					//更新数据库
-					session = ssf.openSession();
-					HashMap <String,Object> map_02 = new HashMap<String,Object>();
-					map_02.put("mid",mid);
-					map_02.put("updatetime",new Date());
-					try{
-						boolean res02 = session.update("updateLayconfigByMid", map_02) ==1?true:false;
-						session.commit();
-						if(res02){
-							//项圈已读取时间配置，并且数据库已更新，删除
-							redisService.remove("time_"+mid);
-							Commandmap.get(mid).remove("com02");
-						}
-						if(Commandmap.get(mid).size()==0){
+						break;
+					case "04":
+						String[] command04 = Analyse.Command_04_Receive(question);
+						mid = command04[0];
+						answer = mid;
+						String command_04 = command04[1];
+						String ip = command04[2];
+						String port = command04[3];
+						String infoupdatecycle = command04[4];
+						String tickcycle = command04[5];
+						String ledenable = command04[6];
+						String tempflag = command04[7];
+						String tempgmt = command04[8];
+						//收到响应
+						CommandStatusmap.get(mid).put("com04",2);
+						//查询得到命令4后的逻辑
+						try{
+							if(1==1){
+								Commandmap.get(mid).remove("com04");
+								redisService.remove("04_"+mid);
+							}
+							if(Commandmap.get(mid).size()==0){
+								answer = "close";
+							}else{
+								answer = "";
+							}
+							//响应完成，删除
+							CommandStatusmap.get(mid).remove("com04");
+						} catch (Exception e) {
+							e.printStackTrace();
 							answer = "close";
-						}else{
-							answer = "";
+						} finally {
 						}
-						//响应完成，删除
-						CommandStatusmap.get(mid).remove("com02");
-					} catch (Exception e) {
-						e.printStackTrace();
-						session.close();
-						answer = "close";
-					} finally {
-
-					}
-					break;
-				case "03":
-					String[] command03_receive = Analyse.Command_03_Receive(question);
-					mid = command03_receive[0];
-					answer = mid;
-					//收到响应
-					CommandStatusmap.get(mid).put("com03",2);
-					//更新数据库
-					session = ssf.openSession();
-					HashMap <String,Object> map_03 = new HashMap<String,Object>();
-					map_03.put("mid",mid);
-					map_03.put("updatetime",new Date());
-					try{
-						boolean res03 = session.update("updateDeviceconfByMid", map_03) ==1?true:false;
-						session.commit();
-						if(res03){
-							//说明项圈已读取基础配置，并且数据库已更新，删除
-							redisService.remove("device_"+mid);
-							Commandmap.get(mid).remove("com03");
-						}
-						if(Commandmap.get(mid).size()==0){
+						break;
+					case "05":
+						String[] command05 = Analyse.Command_05_Receive(question);
+						mid = command05[0];
+						answer = mid;
+						String command_05 = command05[1];
+						String swver = command05[3];
+						String simccid = command05[4];
+						//收到响应
+						CommandStatusmap.get(mid).put("com05",2);
+						//查询得到命令5后的逻辑
+						try{
+							if(1==1){
+								Commandmap.get(mid).remove("com05");
+								redisService.remove("05_"+mid);
+							}
+							if(Commandmap.get(mid).size()==0){
+								answer = "close";
+							}else{
+								answer = "";
+							}
+							//响应完成，删除
+							CommandStatusmap.get(mid).remove("com05");
+						} catch (Exception e) {
+							e.printStackTrace();
 							answer = "close";
-						}else{
-							answer = "";
+						} finally {
 						}
-						//响应完成，删除
-						CommandStatusmap.get(mid).remove("com03");
-					} catch (Exception e) {
-						e.printStackTrace();
-						session.close();
-						answer = "close";
-					} finally {
-
-					}
-					break;
-				case "04":
-					String[] command04 = Analyse.Command_04_Receive(question);
-					mid = command04[0];
-					answer = mid;
-					String command_04 = command04[1];
-					String ip = command04[2];
-					String port = command04[3];
-					String infoupdatecycle = command04[4];
-					String tickcycle = command04[5];
-					String ledenable = command04[6];
-					String tempflag = command04[7];
-					String tempgmt = command04[8];
-					//收到响应
-					CommandStatusmap.get(mid).put("com04",2);
-					//查询得到命令4后的逻辑
-					try{
-						if(1==1){
-							Commandmap.get(mid).remove("com04");
-							redisService.remove("04_"+mid);
-						}
-						if(Commandmap.get(mid).size()==0){
+						break;
+					case "06":
+						String[] command06 = Analyse.Command_06_Receive(question);
+						mid = command06[0];
+						answer = mid;
+						String command_06 = command06[1];
+						String time01 = command06[2];
+						String time02 = command06[3];
+						String time03 = command06[4];
+						String time04 = command06[5];
+						String time05 = command06[6];
+						String time06 = command06[7];
+						String time07 = command06[8];
+						String time08 = command06[9];
+						String time09 = command06[10];
+						String time10 = command06[11];
+						String time11 = command06[12];
+						String time12 = command06[13];
+						//收到响应
+						CommandStatusmap.get(mid).put("com06",2);
+						//查询得到命令6后的逻辑
+						try{
+							if(1==1){
+								Commandmap.get(mid).remove("com06");
+								redisService.remove("06_"+mid);
+							}
+							if(Commandmap.get(mid).size()==0){
+								answer = "close";
+							}else{
+								answer = "";
+							}
+							//响应完成，删除
+							CommandStatusmap.get(mid).remove("com06");
+						} catch (Exception e) {
+							e.printStackTrace();
 							answer = "close";
-						}else{
-							answer = "";
+						} finally {
 						}
-						//响应完成，删除
-						CommandStatusmap.get(mid).remove("com04");
-					} catch (Exception e) {
-						e.printStackTrace();
+						break;
+					default:
 						answer = "close";
-					} finally {
-					}
-					break;
-				case "05":
-					String[] command05 = Analyse.Command_05_Receive(question);
-					mid = command05[0];
-					answer = mid;
-					String command_05 = command05[1];
-					String swver = command05[3];
-					String simccid = command05[4];
-					//收到响应
-					CommandStatusmap.get(mid).put("com05",2);
-					//查询得到命令5后的逻辑
-					try{
-						if(1==1){
-							Commandmap.get(mid).remove("com05");
-							redisService.remove("05_"+mid);
-						}
-						if(Commandmap.get(mid).size()==0){
-							answer = "close";
-						}else{
-							answer = "";
-						}
-						//响应完成，删除
-						CommandStatusmap.get(mid).remove("com05");
-					} catch (Exception e) {
-						e.printStackTrace();
-						answer = "close";
-					} finally {
-					}
-					break;
-				case "06":
-					String[] command06 = Analyse.Command_06_Receive(question);
-					mid = command06[0];
-					answer = mid;
-					String command_06 = command06[1];
-					String time01 = command06[2];
-					String time02 = command06[3];
-					String time03 = command06[4];
-					String time04 = command06[5];
-					String time05 = command06[6];
-					String time06 = command06[7];
-					String time07 = command06[8];
-					String time08 = command06[9];
-					String time09 = command06[10];
-					String time10 = command06[11];
-					String time11 = command06[12];
-					String time12 = command06[13];
-					//收到响应
-					CommandStatusmap.get(mid).put("com06",2);
-					//查询得到命令6后的逻辑
-					try{
-						if(1==1){
-							Commandmap.get(mid).remove("com06");
-							redisService.remove("06_"+mid);
-						}
-						if(Commandmap.get(mid).size()==0){
-							answer = "close";
-						}else{
-							answer = "";
-						}
-						//响应完成，删除
-						CommandStatusmap.get(mid).remove("com06");
-					} catch (Exception e) {
-						e.printStackTrace();
-						answer = "close";
-					} finally {
-					}
-					break;
-				default:
-					answer = "close";
+				}
 			}
 		}
         return answer;  

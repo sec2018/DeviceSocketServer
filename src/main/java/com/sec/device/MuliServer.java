@@ -160,7 +160,7 @@ public class MuliServer implements Runnable{
 						}else if(answer==""){
 
 						}else{
-							if(answer.indexOf("command10_")>0){
+							if(answer.indexOf("command10_")>=0){
 								//10命令
 								answer = answer.split("command10_")[1];
 								client.write(cs.encode(answer));

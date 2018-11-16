@@ -35,7 +35,7 @@ public class ScheduleCheck {
                                 if(MuliServer.Commandmap.get(mid).containsKey(commandkey) && MuliServer.CommandStatusmap.get(mid).get(commandkey) == 1){
 //                                    key.write(MuliServer.cs.encode(MuliServer.heatTimeMapData.get(key)));
                                     key.write(MuliServer.cs.encode(values[i].split("_")[1]));
-                                    Thread.sleep(50);
+                                    Thread.sleep(150);
                                 }
                             }
                         	MuliServer.heatTimeflag.put(key, 2 +","+MuliServer.heatTimeflag.get(key).split(",")[1]);

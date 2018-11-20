@@ -2,7 +2,7 @@ spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://122.112.252.45:3306/transport?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+        url: jdbc:mysql://122.112.252.45:3306/transport?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useLegacyDatetimeCode=false
 #        url: jdbc:mysql://localhost:3306/transport?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
         username: watchdog
         password: 123456

@@ -291,7 +291,8 @@ public class MuliServer implements Runnable{
 						sysLaytime.setTemperature(Byte.parseByte(temperature));
 						sysLaytime.setType(Byte.parseByte(type));
 						sysLaytime.setTimegmt(new Date());
-						sysLaytime.setIslay(Byte.parseByte(status));
+//						sysLaytime.setIslay(Byte.parseByte(status));
+						sysLaytime.setIslay(Byte.parseByte("0"));
 						sysLaytime.setSignallevel(Byte.parseByte(gsm_signal_level));
 						sysLaytime.setUpdatetime(new Date());
 

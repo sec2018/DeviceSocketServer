@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -212,6 +213,9 @@ public class MuliServer implements Runnable{
 		Map<String,String> listtemp = null;
 		Map<String,Integer> listststus = null;
 
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		sdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+
 		//3A1A27000001F7970D0A
 		//3A1A27000010140000752500AEC4E75B1F004E067500121200001500460E0D0A
 		//3A1A2700000412007A70FC2D5FEA05001E00000000000000000061A50D0A
@@ -281,6 +285,7 @@ public class MuliServer implements Runnable{
 						sysLaytime.setMid(mid);
 						sysLaytime.setLatitude(latitude);
 						sysLaytime.setLongitude(longitude);
+
 						if(!grantgmt.equals("0")){
 							sysLaytime.setGrantgmt(new Date(Long.valueOf(grantgmt+"000")));
 						}else {

@@ -19,4 +19,11 @@
         where uimodifyflag = 1 AND
         hardmodifyflag = 0
     </select>
+
+    <update id="updatedeviceconfstatus" parameterType="Map">
+        update sys_deviceconf
+        set status = #{status} AND
+        updatetime = #{updatetime}
+        where mid = #{mid}
+    </update>
 </mapper>

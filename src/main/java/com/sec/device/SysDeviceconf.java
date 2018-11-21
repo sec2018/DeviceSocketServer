@@ -21,22 +21,16 @@ public class SysDeviceconf{
     }
 
     public void setMid(String mid) {
-        this.mid = mid == null ? null : mid.trim();
+        this.mid = mid;
     }
 
-    private Byte status;
+    private Integer status;
+
+    private String simccid;
 
     private String swver;
 
-    @Override
-	public String toString() {
-		return "SysDeviceconf [status=" + status + ", swver=" + swver + ", ip=" + ip + ", port=" + port
-				+ ", infoupdatecycle=" + infoupdatecycle + ", tickcycle=" + tickcycle + ", ledenable=" + ledenable
-				+ ", temporaryflag=" + temporaryflag + ", temporarygmt=" + temporarygmt + ", updatetime=" + updatetime
-				+ "]";
-	}
-
-	private String ip;
+    private String ip;
 
     private Integer port;
 
@@ -50,10 +44,19 @@ public class SysDeviceconf{
 
     private Date temporarygmt;
 
+    private Byte clearerr;
+
+    private Byte factory;
+
+    private Byte uimodifyflag;
+
+    private Byte hardmodifyflag;
+
     private Date updatetime;
 
-    public SysDeviceconf(Integer id, String mid, Byte status, String swver, String ip, Integer port, Integer infoupdatecycle, Integer tickcycle, Byte ledenable, Byte temporaryflag, Date temporarygmt, Date updatetime) {
+    public SysDeviceconf(Integer id, String mid, Integer status, String simccid, String swver, String ip, Integer port, Integer infoupdatecycle, Integer tickcycle, Byte ledenable, Byte temporaryflag, Date temporarygmt, Byte clearerr, Byte factory, Byte uimodifyflag, Byte hardmodifyflag, Date updatetime) {
         this.status = status;
+        this.simccid = simccid;
         this.swver = swver;
         this.ip = ip;
         this.port = port;
@@ -62,6 +65,10 @@ public class SysDeviceconf{
         this.ledenable = ledenable;
         this.temporaryflag = temporaryflag;
         this.temporarygmt = temporarygmt;
+        this.clearerr = clearerr;
+        this.factory = factory;
+        this.uimodifyflag = uimodifyflag;
+        this.hardmodifyflag = hardmodifyflag;
         this.updatetime = updatetime;
     }
 
@@ -69,12 +76,20 @@ public class SysDeviceconf{
         super();
     }
 
-    public Byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getSimccid() {
+        return simccid;
+    }
+
+    public void setSimccid(String simccid) {
+        this.simccid = simccid == null ? null : simccid.trim();
     }
 
     public String getSwver() {
@@ -139,6 +154,38 @@ public class SysDeviceconf{
 
     public void setTemporarygmt(Date temporarygmt) {
         this.temporarygmt = temporarygmt;
+    }
+
+    public Byte getClearerr() {
+        return clearerr;
+    }
+
+    public void setClearerr(Byte clearerr) {
+        this.clearerr = clearerr;
+    }
+
+    public Byte getFactory() {
+        return factory;
+    }
+
+    public void setFactory(Byte factory) {
+        this.factory = factory;
+    }
+
+    public Byte getUimodifyflag() {
+        return uimodifyflag;
+    }
+
+    public void setUimodifyflag(Byte uimodifyflag) {
+        this.uimodifyflag = uimodifyflag;
+    }
+
+    public Byte getHardmodifyflag() {
+        return hardmodifyflag;
+    }
+
+    public void setHardmodifyflag(Byte hardmodifyflag) {
+        this.hardmodifyflag = hardmodifyflag;
     }
 
     public Date getUpdatetime() {

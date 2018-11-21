@@ -291,16 +291,19 @@ public class MuliServer implements Runnable{
 						sysLaytime.setTemperature(Byte.parseByte(temperature));
 						sysLaytime.setType(Byte.parseByte(type));
 						sysLaytime.setTimegmt(new Date());
-//						sysLaytime.setIslay(Byte.parseByte(status));
 						sysLaytime.setIslay(Byte.parseByte("0"));
 						sysLaytime.setSignallevel(Byte.parseByte(gsm_signal_level));
 						sysLaytime.setUpdatetime(new Date());
-
 						session = ssf.openSession();
 						try{
 							boolean res02 = session.insert("insertSysLaytime", sysLaytime) ==1?true:false;
+							HashMap <String,Object> map_10 = new HashMap<String,Object>();
+							map_10.put("mid",mid);
+							map_10.put("status",Integer.parseInt(status));
+							map_10.put("updatetime",new Date());
+							boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
 							session.commit();
-							if(res02){
+							if(res02 && res03){
 								String command10_resp = Analyse.Command_10_Response(mid,true);
 								answer = "command10_"+command10_resp;
 							}
@@ -390,6 +393,8 @@ public class MuliServer implements Runnable{
 						String ledenable = command04[6];
 						String tempflag = command04[7];
 						String tempgmt = command04[8];
+						String clearErr = command04[9];
+						String factory = command04[10];
 						//收到响应
 						CommandStatusmap.get(mid).put("com04",2);
 						//查询得到命令4后的逻辑

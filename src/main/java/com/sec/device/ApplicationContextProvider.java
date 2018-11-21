@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 /**
- *  2018.8.21 苏子卿
+ *  2018.8.21
  *  spring boot 项目中  普通类中无法注入service问题解决方案
  *
  */

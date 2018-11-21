@@ -163,14 +163,11 @@ public class MuliServer implements Runnable{
 						}else{
 							if(answer.indexOf("command10_")>=0){
 								//10命令
-								answer = answer.split("command10_")[1];
-								client.write(cs.encode(answer));
-
-								//确认收到10命令后关闭
-								ScheduleCheck.ShutDownClient(client);
-							}
-							else{
-								Map<String,String> templist = Commandmap.get(answer);
+								String answer01 = answer.split("_")[2];
+								client.write(cs.encode(answer01));
+								Thread.sleep(150);
+								String mid = answer.split("_")[1];
+								Map<String,String> templist = Commandmap.get(mid);
 								String values = "";
 								for(int i=0;i<templist.size();i++){
 									String key = templist.keySet().toArray()[i].toString();
@@ -180,7 +177,7 @@ public class MuliServer implements Runnable{
 									Thread.sleep(150);
 								}
 								heatTimeMapData.put(client, values.substring(0,values.length()-1));
-								heatTimeflag.put(client, 1+","+answer);
+								heatTimeflag.put(client, 1+","+mid);
 							}
 						}
 					}
@@ -231,8 +228,46 @@ public class MuliServer implements Runnable{
 				question = question+"0D0A";
 				switch(question.substring(10,12)){
 					case "01":
+//						answer = "close";
+//						mid = Analyse.Command_01(question)[0];
+//						String deviceconfig = ConnectRedisCheckToken("device_"+mid);
+//						String timeconfig = ConnectRedisCheckToken("time_"+mid);
+//						String get04config = ConnectRedisCheckToken("04_"+mid);
+//						String get05config = ConnectRedisCheckToken("05_"+mid);
+//						String get06config = ConnectRedisCheckToken("06_"+mid);
+//						listtemp = new HashMap<String,String>();
+//						listststus = new HashMap<String,Integer>();
+//						if(deviceconfig!=null && deviceconfig!=""){
+//							listtemp.put("com03",deviceconfig);
+//							listststus.put("com03",1);
+//						}
+//						if(timeconfig!=null && timeconfig!=""){
+//							listtemp.put("com02",timeconfig);
+//							listststus.put("com02",1);
+//						}
+//						if(get04config!=null && get04config!=""){
+//							listtemp.put("com04",get04config);
+//							listststus.put("com04",1);
+//						}
+//						if(get05config!=null && get05config!=""){
+//							listtemp.put("com05",get05config);
+//							listststus.put("com05",1);
+//						}
+//						if(get06config!=null && get06config!=""){
+//							listtemp.put("com06",get06config);
+//							listststus.put("com06",1);
+//						}
+//						Commandmap.put(mid,listtemp);
+//						CommandStatusmap.put(mid,listststus);
+//						if(listtemp.size()>0){
+//							answer = mid;
+//						}
+						break;
+					case "10":
 						answer = "close";
-						mid = Analyse.Command_01(question)[0];
+						String[] command10 = Analyse.Command_10(question);
+						mid = command10[0];
+
 						String deviceconfig = ConnectRedisCheckToken("device_"+mid);
 						String timeconfig = ConnectRedisCheckToken("time_"+mid);
 						String get04config = ConnectRedisCheckToken("04_"+mid);
@@ -262,13 +297,8 @@ public class MuliServer implements Runnable{
 						}
 						Commandmap.put(mid,listtemp);
 						CommandStatusmap.put(mid,listststus);
-						if(listtemp.size()>0){
-							answer = mid;
-						}
-						break;
-					case "10":
-						String[] command10 = Analyse.Command_10(question);
-						mid = command10[0];
+
+
 						String command = command10[1];
 						String type = command10[2];
 						String temperature = command10[3];
@@ -310,7 +340,7 @@ public class MuliServer implements Runnable{
 							session.commit();
 							if(res02 && res03){
 								String command10_resp = Analyse.Command_10_Response(mid,true);
-								answer = "command10_"+command10_resp;
+								answer = "command10_"+mid+"_"+command10_resp;
 							}
 						} catch (Exception e) {
 							e.printStackTrace();

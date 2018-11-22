@@ -562,21 +562,21 @@ public class MuliServer implements Runnable{
 			List<SysLayconfig>  listlayconfig = session.selectList("getAllLayConfigModifiedRecord");
 			if(listlayconfig.size()>0){
 				for (SysLayconfig syslayconfig:listlayconfig) {
-					redisService.set("time_"+syslayconfig.getMid(),Analyse.Command_02_Send(syslayconfig));
+					redisService.setpersist("time_"+syslayconfig.getMid(),Analyse.Command_02_Send(syslayconfig));
 				}
 			}
 			//查询基础设置表
 			List<SysDeviceconf>  listdeviceconf = session.selectList("getAllDeviceConfModifiedRecord");
 			if(listdeviceconf.size()>0){
 				for (SysDeviceconf sysDeviceconf:listdeviceconf) {
-					redisService.set("device_"+sysDeviceconf.getMid(),Analyse.Command_03_Send(sysDeviceconf));
+					redisService.setpersist("device_"+sysDeviceconf.getMid(),Analyse.Command_03_Send(sysDeviceconf));
 
 					//查询命令04
-					redisService.set("04_"+sysDeviceconf.getMid(),Analyse.Command_04_Send(sysDeviceconf.getMid()));
+					redisService.setpersist("04_"+sysDeviceconf.getMid(),Analyse.Command_04_Send(sysDeviceconf.getMid()));
 					//查询命令05
-					redisService.set("05_"+sysDeviceconf.getMid(),Analyse.Command_05_Send(sysDeviceconf.getMid()));
+					redisService.setpersist("05_"+sysDeviceconf.getMid(),Analyse.Command_05_Send(sysDeviceconf.getMid()));
 					//查询命令06
-					redisService.set("06_"+sysDeviceconf.getMid(),Analyse.Command_06_Send(sysDeviceconf.getMid()));
+					redisService.setpersist("06_"+sysDeviceconf.getMid(),Analyse.Command_06_Send(sysDeviceconf.getMid()));
 				}
 			}
 

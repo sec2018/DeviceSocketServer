@@ -330,7 +330,7 @@ public class Analyse {
         v = ScheduleCheck.intToByteArray(factory);
         String factoryres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
 
-        resp = "3A"+midstr+"03"+"1200"+ipres+portres+infoupdatecycleres+tickcycleres+ledenableres+tempflagres+tempgmtres+clearErrres+factoryres+"0000"+"0000"+"0D0A";
+        resp = "3A"+midstr+"03"+"1200"+ipres+portres+infoupdatecycleres+tickcycleres+ledenableres+tempflagres+tempgmtres+clearErrres+factoryres+"0000"+"0D0A";
         return resp;
     }
 

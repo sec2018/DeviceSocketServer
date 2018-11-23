@@ -21,7 +21,7 @@ public class ScheduleCheck {
 					Map.Entry entry = (Map.Entry) iter.next();
                     SocketChannel key = (SocketChannel)entry.getKey();
                     long time = System.currentTimeMillis();
-                   //等待客户端答复，2秒没响应，重发一次，再2秒无反应,即为超时，关闭client
+                    //等待客户端答复，2秒没响应，重发一次，再2秒无反应,即为超时，关闭client
                     if(MuliServer.heatTimeMap.get(key) !=null
                         && time - MuliServer.heatTimeMap.get(key) > 5000  && time - MuliServer.heatTimeMap.get(key) < 10000)
                     {
@@ -55,7 +55,23 @@ public class ScheduleCheck {
                         iter.remove();
                     }
                 }
-            } 
+            }
+            if(!MuliServer.heatTimeMap.isEmpty()){
+                Iterator iter1 = MuliServer.heatTimeMap.entrySet().iterator();
+
+                //遍历所有客户端连接
+                while (iter1.hasNext()){
+                    Map.Entry entry = (Map.Entry) iter1.next();
+                    SocketChannel key1 = (SocketChannel)entry.getKey();
+                    long time1 = System.currentTimeMillis();
+
+                    if(MuliServer.heatTimeMap.get(key1) !=null
+                            && time1 - MuliServer.heatTimeMap.get(key1) > 10000){
+                        System.out.println(time1+" closed");
+                        ShutDownClient(key1);
+                    }
+                }
+            }
         }  
         catch(Throwable t){  
             t.printStackTrace();  
@@ -75,6 +91,8 @@ public class ScheduleCheck {
 
             	MuliServer.heatTimeflag.remove(client);
             	MuliServer.heatTimeMap.remove(client);
+
+                MuliServer.heatTimeMapData.remove(client);
             	
             	if(client != null){  
             		System.out.println(client+" 的客户端回复时间超时，连接关闭！");

@@ -176,8 +176,10 @@ public class MuliServer implements Runnable{
 									client.write(cs.encode(value));
 									Thread.sleep(150);
 								}
-								heatTimeMapData.put(client, values.substring(0,values.length()-1));
-								heatTimeflag.put(client, 1+","+mid);
+								if(values!=""){
+									heatTimeMapData.put(client, values.substring(0,values.length()-1));
+									heatTimeflag.put(client, 1+","+mid);
+								}
 							}
 						}
 					}
@@ -335,7 +337,7 @@ public class MuliServer implements Runnable{
 							HashMap <String,Object> map_10 = new HashMap<String,Object>();
 							map_10.put("mid",mid);
 							map_10.put("status",Integer.parseInt(status));
-							map_10.put("updatetime",new Date());
+//							map_10.put("updatetime",new Date());
 							boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
 							session.commit();
 							if(res02 && res03){
@@ -571,12 +573,12 @@ public class MuliServer implements Runnable{
 				for (SysDeviceconf sysDeviceconf:listdeviceconf) {
 					redisService.setpersist("device_"+sysDeviceconf.getMid(),Analyse.Command_03_Send(sysDeviceconf));
 
-					//查询命令04
-					redisService.setpersist("04_"+sysDeviceconf.getMid(),Analyse.Command_04_Send(sysDeviceconf.getMid()));
-					//查询命令05
-					redisService.setpersist("05_"+sysDeviceconf.getMid(),Analyse.Command_05_Send(sysDeviceconf.getMid()));
-					//查询命令06
-					redisService.setpersist("06_"+sysDeviceconf.getMid(),Analyse.Command_06_Send(sysDeviceconf.getMid()));
+//					//查询命令04
+//					redisService.setpersist("04_"+sysDeviceconf.getMid(),Analyse.Command_04_Send(sysDeviceconf.getMid()));
+//					//查询命令05
+//					redisService.setpersist("05_"+sysDeviceconf.getMid(),Analyse.Command_05_Send(sysDeviceconf.getMid()));
+//					//查询命令06
+//					redisService.setpersist("06_"+sysDeviceconf.getMid(),Analyse.Command_06_Send(sysDeviceconf.getMid()));
 				}
 			}
 

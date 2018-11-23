@@ -22,8 +22,7 @@
 
     <update id="updatedeviceconfstatus" parameterType="Map">
         update sys_deviceconf
-        set status = #{status} AND
-        updatetime = #{updatetime}
+        set status = #{status}
         where mid = #{mid}
     </update>
 </mapper>

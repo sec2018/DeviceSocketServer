@@ -44,7 +44,7 @@ public class ScheduleCheck {
                             && time - MuliServer.heatTimeMap.get(key) > 10000) {
                     	//服务端重发数据，发第3次，或者不发
 //                        key.write(MuliServer.cs.encode(MuliServer.heatTimeMapData.get(key)));
-                        System.out.println(time+" closed");
+//                        System.out.println(time+" closed");
 
 //                        String mid = MuliServer.heatTimeflag.get(key).split(",")[1];
 //                        if(MuliServer.Commandmap.get(mid).size()==0){

@@ -142,9 +142,11 @@ public class MuliServer implements Runnable{
 					
 					String id = client.toString().split("/")[2];  
 					id = id.substring(0,id.length() - 1);
-					long time = System.currentTimeMillis();
-                    heatTimeMap.put(client, time);
+//					long time = System.currentTimeMillis();
+//                    heatTimeMap.put(client, time);
                     if(receiveText.length() > 0) {
+						long time = System.currentTimeMillis();
+                    	heatTimeMap.put(client, time);
 						String answer = getAnswer(receiveText);
 						//根据answer判断需要客户端再次握手，发数据
 						if(answer=="close"){

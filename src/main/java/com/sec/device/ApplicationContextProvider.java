@@ -72,9 +72,9 @@ class MyThread implements Runnable {
     public RedisService redisService;//换成自己的业务层
 
     public MyThread (){
-        this.redisService= (RedisService ) ApplicationContextProvider.getBean("redisService");//替换成自己的service层
+        this.redisService = (RedisService) ApplicationContextProvider.getBean("redisService");//替换成自己的service层
         //或者
-        //this.userService= ApplicationContextProvider.getBean(UserService .class);
+        //this.userService = ApplicationContextProvider.getBean(UserService .class);
     }
 
 

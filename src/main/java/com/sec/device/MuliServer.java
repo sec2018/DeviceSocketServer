@@ -42,9 +42,8 @@ public class MuliServer implements Runnable{
 	static Map<String,Map<String,String>>  Commandmap = new HashMap<String,Map<String,String>>();
 	//1：内存中（未接到答复，等待中），2：响应中   相应完成删除
 	static Map<String,Map<String,Integer>>  CommandStatusmap = new HashMap<String,Map<String,Integer>>();
-//	@Autowired
-//	protected RedisService redisService;
-	//获取的ben对象转为你需要的对象
+
+	//获取的bean对象转为你需要的对象
 	private static RedisService redisService = (RedisService) ApplicationContextProvider.getBean("redisService");
 
 	static {
@@ -63,16 +62,15 @@ public class MuliServer implements Runnable{
 	public MuliServer(int port) {
 		// TODO Auto-generated constructor stub
 		this.port = port;
-
 		try {
-			init();
+			init(port);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void init() throws IOException{
+	private void init(int port) throws IOException{
 		// 创建通道,并设置非阻塞
 		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
 		serverSocketChannel.configureBlocking(false);
@@ -96,8 +94,8 @@ public class MuliServer implements Runnable{
                     SelectionKey key = (SelectionKey) ite.next();                    
                     ite.remove();//确保不重复处理 
                     handle(key);  
-                }  
-                ScheduleCheck.Check();
+                }
+				ScheduleCheck.Check();
             }  
             catch(Throwable t){  
                 t.printStackTrace();  
@@ -105,7 +103,7 @@ public class MuliServer implements Runnable{
         }    
     }
 	
-	private void handle(SelectionKey selectionKey) throws IOException, ClosedChannelException {
+	private void handle(SelectionKey selectionKey) throws IOException{
 		ServerSocketChannel server = null;
 		SocketChannel client = null;
 		String receiveText = null;
@@ -140,16 +138,16 @@ public class MuliServer implements Runnable{
 					receiveText = String.valueOf(cs.decode(rBuffer).array());
 					System.out.println(client.toString()+":"+receiveText);
 					
-					String id = client.toString().split("/")[2];  
-					id = id.substring(0,id.length() - 1);
+//					String id = client.toString().split("/")[2];
+//					id = id.substring(0,id.length() - 1);
 //					long time = System.currentTimeMillis();
-//                    heatTimeMap.put(client, time);
+//                  heatTimeMap.put(client, time);
                     if(receiveText.length() > 0) {
 						long time = System.currentTimeMillis();
                     	heatTimeMap.put(client, time);
 						String answer = getAnswer(receiveText);
 						//根据answer判断需要客户端再次握手，发数据
-						if(answer=="close"){
+						if(answer == "close"){
 							//无更新，不回复, 或者是来自客户端的回复，去除redis的key，更新数据库，然后不回复
 							//不需要客户端再次握手，发数据
 //							heatTimeMap.remove(client);
@@ -160,6 +158,9 @@ public class MuliServer implements Runnable{
 //							}
 							heatTimeMapData.remove(client);
 							ScheduleCheck.ShutDownClient(client);
+						}else if(answer=="wrong"){
+							//一旦客户端指令回复错误，删除痕迹,新加
+							heatTimeMap.remove(client);
 						}else if(answer==""){
 
 						}else{
@@ -204,17 +205,16 @@ public class MuliServer implements Runnable{
 	}
 	
 	private String getAnswer(String questiontemp){
-        String answer = null;  
-           
+        String answer = null;
         Connection conn = null;
         PreparedStatement st = null;
         ResultSet rs = null;
 		String mid = "";
 		SqlSession session = null;
 		Map<String,String> listtemp = null;
-		Map<String,Integer> listststus = null;
+		Map<String,Integer> liststatus = null;
 
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		sdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 
 		//3A1A27000001F7970D0A
@@ -224,7 +224,7 @@ public class MuliServer implements Runnable{
 		//3A1A270000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000D2F40D0A
 		if(questiontemp.length()<12 && questiontemp.indexOf("3A1A") == -1 && questiontemp.indexOf("0D0A") == -1){
 			System.out.println("your sendding command is wrong...");
-			answer = "";
+			answer = "wrong";
 		}else{
 
 			String[] questions = questiontemp.split("0D0A");
@@ -278,29 +278,29 @@ public class MuliServer implements Runnable{
 						String get05config = ConnectRedisCheckToken("05_"+mid);
 						String get06config = ConnectRedisCheckToken("06_"+mid);
 						listtemp = new HashMap<String,String>();
-						listststus = new HashMap<String,Integer>();
+						liststatus = new HashMap<String,Integer>();
 						if(deviceconfig!=null && deviceconfig!=""){
 							listtemp.put("com03",deviceconfig);
-							listststus.put("com03",1);
+							liststatus.put("com03",1);
 						}
 						if(timeconfig!=null && timeconfig!=""){
 							listtemp.put("com02",timeconfig);
-							listststus.put("com02",1);
+							liststatus.put("com02",1);
 						}
 						if(get04config!=null && get04config!=""){
 							listtemp.put("com04",get04config);
-							listststus.put("com04",1);
+							liststatus.put("com04",1);
 						}
 						if(get05config!=null && get05config!=""){
 							listtemp.put("com05",get05config);
-							listststus.put("com05",1);
+							liststatus.put("com05",1);
 						}
 						if(get06config!=null && get06config!=""){
 							listtemp.put("com06",get06config);
-							listststus.put("com06",1);
+							liststatus.put("com06",1);
 						}
 						Commandmap.put(mid,listtemp);
-						CommandStatusmap.put(mid,listststus);
+						CommandStatusmap.put(mid,liststatus);
 
 
 						String command = command10[1];
@@ -535,6 +535,7 @@ public class MuliServer implements Runnable{
 		new Thread(server1).start();
 	}
 
+	//超时重连redis
 	public String ConnectRedisCheckToken(String key){
 		String value = "";
 		int retry = 1;

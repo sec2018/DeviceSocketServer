@@ -1,6 +1,6 @@
 spring:
-    profiles:
-      active: dev
+#    profiles:
+#      active: dev
     # 指定静态资源的路径
     redis:
       database: 3 #索引（默认为0）

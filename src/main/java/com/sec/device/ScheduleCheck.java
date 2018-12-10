@@ -52,7 +52,7 @@ public class ScheduleCheck {
 //                            iter.remove();
 //                        }
                         ShutDownClient(key);
-                        iter.remove();
+//                        iter.remove();
                     }
                 }
             }
@@ -69,9 +69,11 @@ public class ScheduleCheck {
                             && time1 - MuliServer.heatTimeMap.get(key1) > 10000){
                         System.out.println(time1+" closed");
                         ShutDownClient(key1);
+                        iter1.remove();
                     }
                 }
             }
+
         }  
         catch(Throwable t){  
             t.printStackTrace();  

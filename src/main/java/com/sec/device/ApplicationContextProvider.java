@@ -66,6 +66,7 @@ public class ApplicationContextProvider implements ApplicationContextAware {
     }
 
 }
+
 //============================================================上面的不动============================================================================
 class MyThread implements Runnable {
 
@@ -82,9 +83,8 @@ class MyThread implements Runnable {
     public void run() {
 
     }
+
     //=============================下面是get set方法=====================================================
-
-
     public RedisService getRedisService() {
         return redisService;
     }

@@ -7,7 +7,7 @@ spring:
         #&serverTimezone=Hongkong&useLegacyDatetimeCode=false   &useTimezone=Asia/Shanghai&useLegacyDatetimeCode=true
 #        url: jdbc:mysql://localhost:3306/transport?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
         username: watchdog
-        password: 123456
+        password: ABCabc123
         initialSize: 10
         maxActive: 100
         minIdle: 10

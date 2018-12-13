@@ -15,7 +15,7 @@
                 <property name="driver" value="com.mysql.cj.jdbc.Driver" />
                 <property name="url" value="jdbc:mysql://122.112.252.45:3306/dogtest?allowMultiQueries=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=GMT%2B8&amp;" />
                 <property name="username" value="watchdog" />
-                <property name="password" value="123456" />
+                <property name="password" value="ABCabc123" />
             </dataSource>
         </environment>
     </environments>

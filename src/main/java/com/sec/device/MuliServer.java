@@ -1,10 +1,13 @@
 package com.sec.device;
 
+import com.sec.device.pojo.MgSysLaytime;
 import com.sec.device.redis.RedisService;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -45,6 +48,8 @@ public class MuliServer implements Runnable{
 
 	//获取的bean对象转为你需要的对象
 	private static RedisService redisService = (RedisService) ApplicationContextProvider.getBean("redisService");
+	private static MongoTemplate mongoTemplate = (MongoTemplate) ApplicationContextProvider.getBean("mongoTemplate");
+
 
 	static {
 		String resource = "configuration.xml";
@@ -182,6 +187,9 @@ public class MuliServer implements Runnable{
 								if(values!=""){
 									heatTimeMapData.put(client, values.substring(0,values.length()-1));
 									heatTimeflag.put(client, 1+","+mid);
+								}else{
+									heatTimeMap.remove(client);
+									ScheduleCheck.ShutDownClient(client);
 								}
 							}
 						}
@@ -314,8 +322,11 @@ public class MuliServer implements Runnable{
 						String status = command10[9];
 						String gsm_signal_level = command10[10];
 
-						SysLaytime sysLaytime = new SysLaytime();
-						sysLaytime.setId(0);
+						SysLaytime sysLaytime = new SysLaytime();              //mysql
+//						MgSysLaytime sysLaytime = new MgSysLaytime();          //mongo
+
+						sysLaytime.setId(0);                                   //mysql
+//						sysLaytime.setId(UUID.randomUUID().toString());        //mongo
 						sysLaytime.setMid(mid);
 						sysLaytime.setLatitude(latitude);
 						sysLaytime.setLongitude(longitude);
@@ -333,15 +344,20 @@ public class MuliServer implements Runnable{
 						sysLaytime.setIslay(Byte.parseByte("0"));
 						sysLaytime.setSignallevel(Byte.parseByte(gsm_signal_level));
 						sysLaytime.setUpdatetime(new Date());
+
 						session = ssf.openSession();
 						try{
+							//用mysql
 							boolean res02 = session.insert("insertSysLaytime", sysLaytime) ==1?true:false;
+							//用mongodb
+//							MgSysLaytime res02 = mongoTemplate.save(sysLaytime,"sys_laytime");
 							HashMap <String,Object> map_10 = new HashMap<String,Object>();
 							map_10.put("mid",mid);
 							map_10.put("status",Integer.parseInt(status));
 //							map_10.put("updatetime",new Date());
 							boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
 							session.commit();
+//							if(res02!=null && res03){                                     //mongodb
 							if(res02 && res03){
 								String command10_resp = Analyse.Command_10_Response(mid,true);
 								answer = "command10_"+mid+"_"+command10_resp;

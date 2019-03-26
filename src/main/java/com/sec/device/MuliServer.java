@@ -7,7 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
+//import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -48,7 +48,7 @@ public class MuliServer implements Runnable{
 
 	//获取的bean对象转为你需要的对象
 	private static RedisService redisService = (RedisService) ApplicationContextProvider.getBean("redisService");
-	private static MongoTemplate mongoTemplate = (MongoTemplate) ApplicationContextProvider.getBean("mongoTemplate");
+//	private static MongoTemplate mongoTemplate = (MongoTemplate) ApplicationContextProvider.getBean("mongoTemplate");
 
 
 	static {

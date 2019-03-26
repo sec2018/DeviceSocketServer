@@ -2,10 +2,10 @@ package com.sec.device.pojo;
 
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+//import org.springframework.data.mongodb.core.mapping.Document;
+//import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "sequence")
+//@Document(collection = "sequence")
 public class MgSeqInfo {
 
     @Id
@@ -19,7 +19,7 @@ public class MgSeqInfo {
         MgSysLaytime_id = mgSysLaytime_id;
     }
 
-    @Field
+//    @Field
     private String MgSysLaytime_id;// 集合id
 
 }

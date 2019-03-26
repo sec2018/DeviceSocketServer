@@ -4,7 +4,7 @@ import com.sec.device.redis.RedisService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.data.mongodb.core.MongoTemplate;
+//import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 /**
  *  2018.8.21
@@ -73,7 +73,7 @@ class MyThread implements Runnable {
 
     public RedisService redisService;//换成自己的业务层
 
-    public MongoTemplate mongoTemplate;
+//    public MongoTemplate mongoTemplate;
 
     public MyThread (){
         this.redisService = (RedisService) ApplicationContextProvider.getBean("redisService");//替换成自己的service层

@@ -2,13 +2,13 @@ package com.sec.device.pojo;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+//import org.springframework.data.mongodb.core.index.Indexed;
+//import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.Date;
 
-@Document(collection ="sys_laytime")
+//@Document(collection ="sys_laytime")
 public class MgSysLaytime implements Serializable {
 
     private static final long serialVersionUID = -3258839839160856613L;
@@ -16,7 +16,7 @@ public class MgSysLaytime implements Serializable {
     @Id
     private String _id;
 
-    @Indexed(unique = true)
+//    @Indexed(unique = true)
     private String id;
 
     private String mid;

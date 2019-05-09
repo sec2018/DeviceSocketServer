@@ -52,7 +52,7 @@ public class ScheduleCheck {
 //                            iter.remove();
 //                        }
                         ShutDownClient(key);
-//                        iter.remove();
+                        iter.remove();
                     }
                 }
             }
@@ -64,7 +64,7 @@ public class ScheduleCheck {
                     Map.Entry entry = (Map.Entry) iter1.next();
                     SocketChannel key1 = (SocketChannel)entry.getKey();
                     long time1 = System.currentTimeMillis();
-                    iter1.remove();
+
                     if(MuliServer.heatTimeMap.get(key1) !=null
                             && time1 - MuliServer.heatTimeMap.get(key1) > 10000){
                         System.out.println(time1+" closed");
@@ -72,7 +72,6 @@ public class ScheduleCheck {
                     }
                 }
             }
-
         }  
         catch(Throwable t){  
             t.printStackTrace();  

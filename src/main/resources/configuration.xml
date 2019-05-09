@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <typeAlias alias="SysDeviceconf" type="com.sec.device.SysDeviceconf"></typeAlias>
+        <typeAlias alias="SysLaytime" type="com.sec.device.SysLaytime"></typeAlias>
+        <typeAlias alias="SysLayconfig" type="com.sec.device.SysLayconfig"></typeAlias>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <!--性能如果不满足的话考虑用Druid-->
+            <transactionManager type="JDBC"></transactionManager>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver" />
+                <property name="url" value="jdbc:mysql://122.112.252.45:3306/dogdev?allowMultiQueries=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=GMT%2B8&amp;" />
+                <property name="username" value="watchdog" />
+                <property name="password" value="ABCabc123" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="SysDeviceconf.xml"/>
+        <mapper resource="SysLaytime.xml"/>
+        <mapper resource="SysLayconfig.xml"/>
+    </mappers>
+
+</configuration>

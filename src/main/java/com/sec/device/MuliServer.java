@@ -1,13 +1,10 @@
 package com.sec.device;
 
-import com.sec.device.pojo.MgSysLaytime;
 import com.sec.device.redis.RedisService;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -45,11 +42,10 @@ public class MuliServer implements Runnable{
 	static Map<String,Map<String,String>>  Commandmap = new HashMap<String,Map<String,String>>();
 	//1：内存中（未接到答复，等待中），2：响应中   相应完成删除
 	static Map<String,Map<String,Integer>>  CommandStatusmap = new HashMap<String,Map<String,Integer>>();
-
-	//获取的bean对象转为你需要的对象
+//	@Autowired
+//	protected RedisService redisService;
+	//获取的ben对象转为你需要的对象
 	private static RedisService redisService = (RedisService) ApplicationContextProvider.getBean("redisService");
-	private static MongoTemplate mongoTemplate = (MongoTemplate) ApplicationContextProvider.getBean("mongoTemplate");
-
 
 	static {
 		String resource = "configuration.xml";
@@ -67,15 +63,16 @@ public class MuliServer implements Runnable{
 	public MuliServer(int port) {
 		// TODO Auto-generated constructor stub
 		this.port = port;
+
 		try {
-			init(port);
+			init();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void init(int port) throws IOException{
+	private void init() throws IOException{
 		// 创建通道,并设置非阻塞
 		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
 		serverSocketChannel.configureBlocking(false);
@@ -99,8 +96,8 @@ public class MuliServer implements Runnable{
                     SelectionKey key = (SelectionKey) ite.next();                    
                     ite.remove();//确保不重复处理 
                     handle(key);  
-                }
-				ScheduleCheck.Check();
+                }  
+                ScheduleCheck.Check();
             }  
             catch(Throwable t){  
                 t.printStackTrace();  
@@ -108,7 +105,7 @@ public class MuliServer implements Runnable{
         }    
     }
 	
-	private void handle(SelectionKey selectionKey) throws IOException{
+	private void handle(SelectionKey selectionKey) throws IOException, ClosedChannelException {
 		ServerSocketChannel server = null;
 		SocketChannel client = null;
 		String receiveText = null;
@@ -143,16 +140,16 @@ public class MuliServer implements Runnable{
 					receiveText = String.valueOf(cs.decode(rBuffer).array());
 					System.out.println(client.toString()+":"+receiveText);
 					
-//					String id = client.toString().split("/")[2];
-//					id = id.substring(0,id.length() - 1);
+					String id = client.toString().split("/")[2];  
+					id = id.substring(0,id.length() - 1);
 //					long time = System.currentTimeMillis();
-//                  heatTimeMap.put(client, time);
+//                    heatTimeMap.put(client, time);
                     if(receiveText.length() > 0) {
 						long time = System.currentTimeMillis();
                     	heatTimeMap.put(client, time);
 						String answer = getAnswer(receiveText);
 						//根据answer判断需要客户端再次握手，发数据
-						if(answer == "close"){
+						if(answer=="close"){
 							//无更新，不回复, 或者是来自客户端的回复，去除redis的key，更新数据库，然后不回复
 							//不需要客户端再次握手，发数据
 //							heatTimeMap.remove(client);
@@ -163,9 +160,6 @@ public class MuliServer implements Runnable{
 //							}
 							heatTimeMapData.remove(client);
 							ScheduleCheck.ShutDownClient(client);
-						}else if(answer=="wrong"){
-							//一旦客户端指令回复错误，删除痕迹,新加
-							heatTimeMap.remove(client);
 						}else if(answer==""){
 
 						}else{
@@ -187,9 +181,6 @@ public class MuliServer implements Runnable{
 								if(values!=""){
 									heatTimeMapData.put(client, values.substring(0,values.length()-1));
 									heatTimeflag.put(client, 1+","+mid);
-								}else{
-									heatTimeMap.remove(client);
-									ScheduleCheck.ShutDownClient(client);
 								}
 							}
 						}
@@ -213,16 +204,17 @@ public class MuliServer implements Runnable{
 	}
 	
 	private String getAnswer(String questiontemp){
-        String answer = null;
+        String answer = null;  
+           
         Connection conn = null;
         PreparedStatement st = null;
         ResultSet rs = null;
 		String mid = "";
 		SqlSession session = null;
 		Map<String,String> listtemp = null;
-		Map<String,Integer> liststatus = null;
+		Map<String,Integer> listststus = null;
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		sdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 
 		//3A1A27000001F7970D0A
@@ -232,7 +224,7 @@ public class MuliServer implements Runnable{
 		//3A1A270000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000D2F40D0A
 		if(questiontemp.length()<12 && questiontemp.indexOf("3A1A") == -1 && questiontemp.indexOf("0D0A") == -1){
 			System.out.println("your sendding command is wrong...");
-			answer = "wrong";
+			answer = "";
 		}else{
 
 			String[] questions = questiontemp.split("0D0A");
@@ -286,29 +278,29 @@ public class MuliServer implements Runnable{
 						String get05config = ConnectRedisCheckToken("05_"+mid);
 						String get06config = ConnectRedisCheckToken("06_"+mid);
 						listtemp = new HashMap<String,String>();
-						liststatus = new HashMap<String,Integer>();
+						listststus = new HashMap<String,Integer>();
 						if(deviceconfig!=null && deviceconfig!=""){
 							listtemp.put("com03",deviceconfig);
-							liststatus.put("com03",1);
+							listststus.put("com03",1);
 						}
 						if(timeconfig!=null && timeconfig!=""){
 							listtemp.put("com02",timeconfig);
-							liststatus.put("com02",1);
+							listststus.put("com02",1);
 						}
 						if(get04config!=null && get04config!=""){
 							listtemp.put("com04",get04config);
-							liststatus.put("com04",1);
+							listststus.put("com04",1);
 						}
 						if(get05config!=null && get05config!=""){
 							listtemp.put("com05",get05config);
-							liststatus.put("com05",1);
+							listststus.put("com05",1);
 						}
 						if(get06config!=null && get06config!=""){
 							listtemp.put("com06",get06config);
-							liststatus.put("com06",1);
+							listststus.put("com06",1);
 						}
 						Commandmap.put(mid,listtemp);
-						CommandStatusmap.put(mid,liststatus);
+						CommandStatusmap.put(mid,listststus);
 
 
 						String command = command10[1];
@@ -322,11 +314,8 @@ public class MuliServer implements Runnable{
 						String status = command10[9];
 						String gsm_signal_level = command10[10];
 
-						SysLaytime sysLaytime = new SysLaytime();              //mysql
-//						MgSysLaytime sysLaytime = new MgSysLaytime();          //mongo
-
-						sysLaytime.setId(0);                                   //mysql
-//						sysLaytime.setId(UUID.randomUUID().toString());        //mongo
+						SysLaytime sysLaytime = new SysLaytime();
+						sysLaytime.setId(0);
 						sysLaytime.setMid(mid);
 						sysLaytime.setLatitude(latitude);
 						sysLaytime.setLongitude(longitude);
@@ -344,20 +333,15 @@ public class MuliServer implements Runnable{
 						sysLaytime.setIslay(Byte.parseByte("0"));
 						sysLaytime.setSignallevel(Byte.parseByte(gsm_signal_level));
 						sysLaytime.setUpdatetime(new Date());
-
 						session = ssf.openSession();
 						try{
-							//用mysql
 							boolean res02 = session.insert("insertSysLaytime", sysLaytime) ==1?true:false;
-							//用mongodb
-//							MgSysLaytime res02 = mongoTemplate.save(sysLaytime,"sys_laytime");
 							HashMap <String,Object> map_10 = new HashMap<String,Object>();
 							map_10.put("mid",mid);
 							map_10.put("status",Integer.parseInt(status));
 //							map_10.put("updatetime",new Date());
 							boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
 							session.commit();
-//							if(res02!=null && res03){                                     //mongodb
 							if(res02 && res03){
 								String command10_resp = Analyse.Command_10_Response(mid,true);
 								answer = "command10_"+mid+"_"+command10_resp;
@@ -551,11 +535,10 @@ public class MuliServer implements Runnable{
 		new Thread(server1).start();
 	}
 
-	//超时重连redis
 	public String ConnectRedisCheckToken(String key){
 		String value = "";
 		int retry = 1;
-		while (retry<=3){
+		while (retry<=5){
 			try
 			{
 				//业务代码

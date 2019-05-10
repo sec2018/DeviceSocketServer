@@ -573,8 +573,9 @@ public class MuliServer implements Runnable{
 			List<SysDeviceconf>  listdeviceconf = session.selectList("getAllDeviceConfModifiedRecord");
 			if(listdeviceconf.size()>0){
 				for (SysDeviceconf sysDeviceconf:listdeviceconf) {
-					redisService.setpersist("device_"+sysDeviceconf.getMid(),Analyse.Command_03_Send(sysDeviceconf));
-
+					if(sysDeviceconf.getIp()!=null){
+						redisService.setpersist("device_"+sysDeviceconf.getMid(),Analyse.Command_03_Send(sysDeviceconf));
+					}
 //					//查询命令04
 //					redisService.setpersist("04_"+sysDeviceconf.getMid(),Analyse.Command_04_Send(sysDeviceconf.getMid()));
 //					//查询命令05

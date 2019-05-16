@@ -1,6 +1,5 @@
-package com.sec.device;
+package com.sec.device.util.common;
 
-import com.sec.device.redis.RedisService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -67,29 +66,29 @@ public class ApplicationContextProvider implements ApplicationContextAware {
 
 }
 //============================================================上面的不动============================================================================
-class MyThread implements Runnable {
-
-    public RedisService redisService;//换成自己的业务层
-
-    public MyThread (){
-        this.redisService= (RedisService ) ApplicationContextProvider.getBean("redisService");//替换成自己的service层
-        //或者
-        //this.userService= ApplicationContextProvider.getBean(UserService .class);
-    }
-
-
-    @Override
-    public void run() {
-
-    }
-    //=============================下面是get set方法=====================================================
-
-
-    public RedisService getRedisService() {
-        return redisService;
-    }
-
-    public void setRedisService(RedisService redisService) {
-        this.redisService = redisService;
-    }
-}
+//class MyThread implements Runnable {
+//
+//    public RedisService redisService;//换成自己的业务层
+//
+//    public MyThread (){
+//        this.redisService= (RedisService ) ApplicationContextProvider.getBean("redisService");//替换成自己的service层
+//        //或者
+//        //this.userService= ApplicationContextProvider.getBean(UserService .class);
+//    }
+//
+//
+//    @Override
+//    public void run() {
+//
+//    }
+//    //=============================下面是get set方法=====================================================
+//
+//
+//    public RedisService getRedisService() {
+//        return redisService;
+//    }
+//
+//    public void setRedisService(RedisService redisService) {
+//        this.redisService = redisService;
+//    }
+//}

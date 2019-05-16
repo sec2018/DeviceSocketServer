@@ -1,6 +1,11 @@
-package com.sec.device;
+package com.sec.device.config;
 
-import com.sec.device.redis.RedisService;
+import com.sec.device.pojo.SysDeviceconf;
+import com.sec.device.pojo.SysLayconfig;
+import com.sec.device.pojo.SysLaytime;
+import com.sec.device.util.common.Analyse;
+import com.sec.device.util.common.ApplicationContextProvider;
+import com.sec.device.util.redis.RedisService;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -97,7 +102,7 @@ public class MuliServer implements Runnable{
                     ite.remove();//确保不重复处理 
                     handle(key);  
                 }  
-                ScheduleCheck.Check();
+                MuliScheduleCheck.Check();
             }  
             catch(Throwable t){  
                 t.printStackTrace();  
@@ -159,7 +164,7 @@ public class MuliServer implements Runnable{
 //								client.close();
 //							}
 							heatTimeMapData.remove(client);
-							ScheduleCheck.ShutDownClient(client);
+							MuliScheduleCheck.ShutDownClient(client);
 						}else if(answer==""){
 
 						}else{

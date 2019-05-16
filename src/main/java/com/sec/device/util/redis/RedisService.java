@@ -1,7 +1,7 @@
-package com.sec.device.redis;
+package com.sec.device.util.redis;
 
 public interface RedisService {
-	/**
+    /**
      * set存数据
      * @param key
      * @param value

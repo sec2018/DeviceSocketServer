@@ -1,4 +1,4 @@
-package com.sec.device;
+package com.sec.device.pojo;
 
 import java.util.Date;
 

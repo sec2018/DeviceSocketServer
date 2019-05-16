@@ -1,21 +1,54 @@
 package com.sec.device;
 
+import com.sec.device.config.MuliServer;
+import com.sec.device.config.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 //@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 @SpringBootApplication
 public class DeviceApplication {
 
+	private static final Logger log = LoggerFactory.getLogger(DeviceApplication.class);
+
 	public static void main(String[] args) {
 		SpringApplication.run(DeviceApplication.class, args);
+//		try {
+//			MuliServer.Start();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+
 		try {
-			MuliServer.Start();
-		} catch (InterruptedException e) {
+			BufferedReader br = null;
+			Server server = new Server();
+			try {
+				int port = 59999;
+				server.start(port);
+				String cmd = null;
+				System.out.println("Enter 'exit' to exit， server is listening on: "+ port);
+				br = new BufferedReader(new InputStreamReader(System.in));
+				while ((cmd = br.readLine()) != null){
+					if("exit".equalsIgnoreCase(cmd)){
+						break;
+					}
+				}
+			} catch (IOException e) {
+				log.error("Error on run server",e);
+			}finally {
+				br.close();
+				server.close();
+			}
+			System.out.println("bye");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 
 
 //		String str_01 = "3A1A27000001F7970D0A";

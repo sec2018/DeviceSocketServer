@@ -1,4 +1,4 @@
-package com.sec.device;
+package com.sec.device.util.common;
 
 public class CRC16Util {
     /**

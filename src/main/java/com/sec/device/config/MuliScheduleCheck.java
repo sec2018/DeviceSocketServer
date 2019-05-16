@@ -1,11 +1,12 @@
-package com.sec.device;
+package com.sec.device.config;
+
+import com.sec.device.config.MuliServer;
 
 import java.nio.channels.SocketChannel;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
 
-public class ScheduleCheck {
+public class MuliScheduleCheck {
 
 	public static void Check(){
 		try{

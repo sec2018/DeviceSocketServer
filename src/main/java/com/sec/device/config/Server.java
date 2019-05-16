@@ -207,20 +207,6 @@ public class Server implements Runnable{
             sc.close();
             return;
         }
-//        if(!StringUtils.isEmpty(rs)){
-//            String[] sa = rs.split("\n");
-//            for (String s: sa) {
-//                if(!StringUtils.isEmpty(s)){
-//                    log.info("{}: {}",remote,s);
-////                    queue.add(String.format("%s: %s\n",remote,s));
-//                    queue.add(s);
-//                    //断开客户端
-//                    if("bye".equalsIgnoreCase(s)){
-//                        sc.close();
-//                    }
-//                }
-//            }
-//        }
     }
 
     public static void write(SocketChannel sc, ByteBuffer buf) throws IOException{
@@ -327,9 +313,9 @@ public class Server implements Runnable{
         //3A1A270000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000D2F40D0A
         if(questiontemp.length()<12 && questiontemp.indexOf("3A1A") == -1 && questiontemp.indexOf("0D0A") == -1){
             System.out.println("your sendding command is wrong...");
+            System.out.println("waiting for next right command...");
             answer = "";
         }else{
-
             String[] questions = questiontemp.split("0D0A");
             for (String question:questions) {
                 question = question+"0D0A";
@@ -413,9 +399,10 @@ public class Server implements Runnable{
                         String grantgmt = command10[6];
                         String latitude = command10[7];
                         String longitude = command10[8];
-                        String status = command10[9];
-                        String gsm_signal_level = command10[10];
-                        String pillcode = command10[11];
+                        String cyclenum = command10[9];
+                        String status = command10[10];
+                        String gsm_signal_level = command10[11];
+                        String pillcode = command10[12];
 
                         SysLaytime sysLaytime = new SysLaytime();
                         sysLaytime.setId(0);

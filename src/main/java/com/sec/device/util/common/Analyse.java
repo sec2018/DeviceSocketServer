@@ -39,7 +39,7 @@ public class Analyse {
         if(hexstr.length()!=64){
             return null;
         }
-        String[] rescommand_10 = new String[12];
+        String[] rescommand_10 = new String[13];
         if(hexstr.substring(0,2).equals("3A") && hexstr.substring(60,64).equals("0D0A")){
             byte[] res = MuliScheduleCheck.hexStringToBytes(hexstr);
             //10命令
@@ -135,15 +135,26 @@ public class Analyse {
             String res57 = res57_lngdegree+"."+res57_latcent+res57_latsecond;
             System.out.println("经度： "+res57);
             rescommand_10[8] = res57;
-            //投药寄存器状态  2个字节  小端模式   (第25，26个字节)
-            v[0] = 0;
-            v[1] = 0;
-            for(int i=25,k=2;i>23;i--,k++){
-                v[k]=res[i];
-            }
-            int res58 = MuliScheduleCheck.byteArrayToInt(v);
-            System.out.println("投药寄存器状态： "+res58);
-            rescommand_10[9] = res58+"";
+ //           //投药寄存器状态  2个字节  小端模式   (第25，26个字节)
+//            v[0] = 0;
+//            v[1] = 0;
+//            for(int i=25,k=2;i>23;i--,k++){
+//                v[k]=res[i];
+//            }
+//            int res58 = MuliScheduleCheck.byteArrayToInt(v);
+//            System.out.println("投药寄存器状态： "+res58);
+//            rescommand_10[9] = res58+"";
+
+            //轮询次数  投药寄存器状态  2个字节  小端模式   (第25，26个字节)
+            //            int sta2 = res[1] + (res[2]&0x0F)*256;   //0x0F 屏蔽4位   0x00屏蔽8位
+            //轮询次数  右移4位
+            int res581 = res[25] >> 4;
+            //投药寄存器状态
+            int res582 = res[24] + (res[25]&0x0F)*256;
+            System.out.println("轮询次数： "+res581);
+            rescommand_10[9] = res581+"";
+            System.out.println("投药寄存器状态： "+res582);
+            rescommand_10[10] = res582+"";
             //gsm信号强度 2个字节  小端模式   (第27，28个字节)
 //            v[0] = 0;
 //            v[1] = 0;
@@ -157,13 +168,13 @@ public class Analyse {
             v[3] = res[26];
             int res591 = ScheduleCheck.byteArrayToInt(v);
             System.out.println("gsm信号强度： "+res591);
-            rescommand_10[10] = res591+"";
+            rescommand_10[11] = res591+"";
 
             //投药编号  1个字节      (第27个字节)
             v[3] = res[27];
             int res592 = ScheduleCheck.byteArrayToInt(v);
             System.out.println("投药编号： "+res592);
-            rescommand_10[11] = res592+"";
+            rescommand_10[12] = res592+"";
 
 
             //endregion

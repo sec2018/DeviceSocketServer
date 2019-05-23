@@ -430,11 +430,19 @@ public class Server implements Runnable{
                             map_10.put("mid",mid);
                             map_10.put("status",Integer.parseInt(status));
 //							map_10.put("updatetime",new Date());
-                            boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
-                            session.commit();
-                            if(res02 && res03){
-                                String command10_resp = Analyse.Command_10_Response(mid,true);
-                                answer = "command10_"+mid+"_"+command10_resp;
+                            if(type.equals("1")){
+                                boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
+                                session.commit();
+                                if(res02 && res03){
+                                    String command10_resp = Analyse.Command_10_Response(mid,true);
+                                    answer = "command10_"+mid+"_"+command10_resp;
+                                }
+                            }else{
+                                session.commit();
+                                if(res02){
+                                    String command10_resp = Analyse.Command_10_Response(mid,true);
+                                    answer = "command10_"+mid+"_"+command10_resp;
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -526,11 +534,43 @@ public class Server implements Runnable{
                         String factory = command04[10];
                         //收到响应
                         CommandStatusmap.get(mid).put("com04",2);
+                        //更新数据库
+                        session = ssf.openSession();
                         //查询得到命令4后的逻辑
                         try{
-                            if(1==1){
+                            SysDeviceconf sysDeviceconf = session.selectOne("selectSysDeviceconf",mid);
+                            if(sysDeviceconf==null){
+                                answer = "close";
+                                break;
+                            }
+                            if(sysDeviceconf.getIp()!=null && sysDeviceconf.getIp()!=""){
                                 Commandmap.get(mid).remove("com04");
                                 redisService.remove("04_"+mid);
+                            }else{
+                                //第一次从硬件拿到绑定的信息
+                                sysDeviceconf.setMid(mid);
+                                sysDeviceconf.setIp(ip);
+                                sysDeviceconf.setPort(Integer.parseInt(port));
+                                sysDeviceconf.setInfoupdatecycle(Integer.parseInt(infoupdatecycle));
+                                sysDeviceconf.setTickcycle(Integer.parseInt(tickcycle));
+                                sysDeviceconf.setLedenable(Byte.parseByte(ledenable));
+                                sysDeviceconf.setTemporaryflag(Byte.parseByte(tempflag));
+                                if(!tempgmt.equals("0")){
+                                    sysDeviceconf.setTemporarygmt(new Date(Long.valueOf(tempgmt+"000")));
+                                }else {
+                                    sysDeviceconf.setTemporarygmt(new Date());
+                                }
+                                sysDeviceconf.setClearerr(Byte.parseByte(clearErr));
+                                sysDeviceconf.setFactory(Byte.parseByte(factory));
+                                sysDeviceconf.setUpdatetime(new Date());
+                                sysDeviceconf.setUimodifyflag(Byte.parseByte("0"));
+                                sysDeviceconf.setHardmodifyflag(Byte.parseByte("0"));
+                                boolean flag = session.update("updateDeviceconf",sysDeviceconf)==1?true:false;
+                                session.commit();
+                                if(flag){
+                                    Commandmap.get(mid).remove("com04");
+                                    redisService.remove("04_"+mid);
+                                }
                             }
                             if(Commandmap.get(mid).size()==0){
                                 answer = "close";

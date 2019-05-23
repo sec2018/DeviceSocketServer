@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="SysDeviceconf">
-    <select id="selectSysDeviceconf" parameterType="String" resultType="SysDeviceconf">
+    <select id="selectSysDeviceconf" parameterType="String" resultType="com.sec.device.pojo.SysDeviceconf">
         SELECT * FROM sys_deviceconf WHERE mid = #{mid}
     </select>
 
@@ -14,7 +14,7 @@
         where mid = #{mid}
     </update>
 
-    <select id="getAllDeviceConfModifiedRecord" resultType="SysDeviceconf">
+    <select id="getAllDeviceConfModifiedRecord" resultType="com.sec.device.pojo.SysDeviceconf">
         select * from sys_deviceconf
         where uimodifyflag = 1 AND
         hardmodifyflag = 0
@@ -24,5 +24,15 @@
         update sys_deviceconf
         set status = #{status}
         where mid = #{mid}
+    </update>
+
+    <!--this.simccid = simccid;-->
+    <!--this.swver = swver;-->
+    <update id="updateDeviceconf" parameterType="com.sec.device.pojo.SysDeviceconf">
+        update sys_deviceconf
+        set status = #{status},ip=#{ip},port=#{port},infoupdatecycle=#{infoupdatecycle},tickcycle=#{tickcycle},
+        ledenable=#{ledenable},temporaryflag=#{temporaryflag},temporarygmt=#{temporarygmt},clearerr=#{clearerr},
+        factory=#{factory},uimodifyflag=#{uimodifyflag},hardmodifyflag=#{hardmodifyflag},updatetime = #{updatetime}
+        where id = #{id}
     </update>
 </mapper>

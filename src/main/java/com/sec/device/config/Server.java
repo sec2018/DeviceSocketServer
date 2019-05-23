@@ -278,12 +278,12 @@ public class Server implements Runnable{
                     if(sysDeviceconf.getIp()!=null){
                         redisService.setpersist("device_"+sysDeviceconf.getMid(),Analyse.Command_03_Send(sysDeviceconf));
                     }
-//					//查询命令04
-//					redisService.setpersist("04_"+sysDeviceconf.getMid(),Analyse.Command_04_Send(sysDeviceconf.getMid()));
-//					//查询命令05
-//					redisService.setpersist("05_"+sysDeviceconf.getMid(),Analyse.Command_05_Send(sysDeviceconf.getMid()));
-//					//查询命令06
-//					redisService.setpersist("06_"+sysDeviceconf.getMid(),Analyse.Command_06_Send(sysDeviceconf.getMid()));
+					//查询命令04
+					redisService.setpersist("04_"+sysDeviceconf.getMid(),Analyse.Command_04_Send(sysDeviceconf.getMid()));
+					//查询命令05
+					redisService.setpersist("05_"+sysDeviceconf.getMid(),Analyse.Command_05_Send(sysDeviceconf.getMid()));
+					//查询命令06
+					redisService.setpersist("06_"+sysDeviceconf.getMid(),Analyse.Command_06_Send(sysDeviceconf.getMid()));
                 }
             }
         } catch (Exception e) {

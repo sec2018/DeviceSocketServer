@@ -3,6 +3,7 @@ package com.sec.device.config;
 import com.sec.device.pojo.SysDeviceconf;
 import com.sec.device.pojo.SysLayconfig;
 import com.sec.device.pojo.SysLaytime;
+import com.sec.device.pojo.Systimepos;
 import com.sec.device.util.common.Analyse;
 import com.sec.device.util.common.ApplicationContextProvider;
 import com.sec.device.util.redis.RedisService;
@@ -594,11 +595,29 @@ public class Server implements Runnable{
                         String simccid = command05[4];
                         //收到响应
                         CommandStatusmap.get(mid).put("com05",2);
+                        //更新数据库
+                        session = ssf.openSession();
                         //查询得到命令5后的逻辑
                         try{
-                            if(1==1){
+                            SysDeviceconf sysDeviceconf = session.selectOne("selectSysDeviceconf",mid);
+                            if(sysDeviceconf==null){
+                                answer = "close";
+                                break;
+                            }
+                            if(sysDeviceconf.getSimccid()!=null && sysDeviceconf.getSimccid()!=""){
                                 Commandmap.get(mid).remove("com05");
                                 redisService.remove("05_"+mid);
+                            }else{
+                                //第一次从硬件拿到绑定的信息
+                                sysDeviceconf.setMid(mid);
+                                sysDeviceconf.setSwver(swver);
+                                sysDeviceconf.setSimccid(simccid);
+                                boolean flag = session.update("updateCCidDeviceconf",sysDeviceconf)==1?true:false;
+                                session.commit();
+                                if(flag){
+                                    Commandmap.get(mid).remove("com05");
+                                    redisService.remove("05_"+mid);
+                                }
                             }
                             if(Commandmap.get(mid).size()==0){
                                 answer = "close";
@@ -632,9 +651,85 @@ public class Server implements Runnable{
                         String time12 = command06[13];
                         //收到响应
                         CommandStatusmap.get(mid).put("com06",2);
+                        //更新数据库
+                        session = ssf.openSession();
                         //查询得到命令6后的逻辑
                         try{
-                            if(1==1){
+                            Systimepos systimepos = session.selectOne("selectSystimepos",mid);
+                            if(systimepos==null) {
+                                //插入逻辑
+                                systimepos = new Systimepos();
+                            }
+                            if(!time01.equals("0")){
+                                systimepos.setOne(new Date(Long.valueOf(time01+"000")));
+                            }else {
+                                systimepos.setOne(null);
+                            }
+                            if(!time02.equals("0")){
+                                systimepos.setTwo(new Date(Long.valueOf(time02+"000")));
+                            }else {
+                                systimepos.setTwo(null);
+                            }
+                            if(!time03.equals("0")){
+                                systimepos.setThree(new Date(Long.valueOf(time03+"000")));
+                            }else {
+                                systimepos.setThree(null);
+                            }
+                            if(!time04.equals("0")){
+                                systimepos.setFour(new Date(Long.valueOf(time04+"000")));
+                            }else {
+                                systimepos.setFour(null);
+                            }
+                            if(!time05.equals("0")){
+                                systimepos.setFive(new Date(Long.valueOf(time05+"000")));
+                            }else {
+                                systimepos.setFive(null);
+                            }
+                            if(!time06.equals("0")){
+                                systimepos.setSix(new Date(Long.valueOf(time06+"000")));
+                            }else {
+                                systimepos.setSix(null);
+                            }
+                            if(!time07.equals("0")){
+                                systimepos.setSeven(new Date(Long.valueOf(time07+"000")));
+                            }else {
+                                systimepos.setSeven(null);
+                            }
+                            if(!time08.equals("0")){
+                                systimepos.setEight(new Date(Long.valueOf(time08+"000")));
+                            }else {
+                                systimepos.setEight(null);
+                            }
+                            if(!time09.equals("0")){
+                                systimepos.setNine(new Date(Long.valueOf(time09+"000")));
+                            }else {
+                                systimepos.setNine(null);
+                            }
+                            if(!time10.equals("0")){
+                                systimepos.setTen(new Date(Long.valueOf(time10+"000")));
+                            }else {
+                                systimepos.setTen(null);
+                            }
+                            if(!time11.equals("0")){
+                                systimepos.setEleven(new Date(Long.valueOf(time11+"000")));
+                            }else {
+                                systimepos.setEleven(null);
+                            }
+                            if(!time12.equals("0")){
+                                systimepos.setTwelve(new Date(Long.valueOf(time12+"000")));
+                            }else {
+                                systimepos.setTwelve(null);
+                            }
+                            boolean flag = false;
+                            if(systimepos.getMid()==null){
+                                //插入
+                                systimepos.setMid(mid);
+                                flag  = session.insert("insertSystimepos", systimepos) ==1?true:false;
+                            }else{
+                                //更新
+                                flag = session.update("updateSystimepos", systimepos) ==1?true:false;
+                            }
+                            if(flag){
                                 Commandmap.get(mid).remove("com06");
                                 redisService.remove("06_"+mid);
                             }

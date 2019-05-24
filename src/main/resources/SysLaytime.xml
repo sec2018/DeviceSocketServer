@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="SysLaytime">
-    <insert id="insertSysLaytime" parameterType="SysLaytime">
+    <insert id="insertSysLaytime" parameterType="com.sec.device.pojo.SysLaytime">
         INSERT INTO sys_laytime(id,mid,latitude,longitude,grantgmt,err,voltage,temperature,type,timegmt,islay,signallevel,updatetime)
         VALUES(0,#{mid},#{latitude},#{longitude},#{grantgmt},#{err},#{voltage},#{temperature},#{type},#{timegmt},#{islay},#{signallevel},#{updatetime});
     </insert>

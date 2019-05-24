@@ -634,7 +634,7 @@ public class Analyse {
             v[3] = res[35];
             char res53_20 = (char) MuliScheduleCheck.byteArrayToInt(v);
             String res53 = ""+res53_1+res53_2+res53_3+res53_4+res53_5+res53_6+res53_7+res53_8+res53_9+res53_10+res53_11+res53_12+res53_13+res53_14+res53_15+res53_16+res53_17+res53_18+res53_19+res53_20;
-            System.out.println(res53);
+            System.out.println("SIM_CCID: "+res53);
             rescommand_05[4] = res53;
             //CRC16 2个字节  小端模式         (第37，38个字节)
             v[0] = 0;

@@ -10,7 +10,7 @@
         where mid = #{mid} ORDER by updatetime DESC limit 1
     </update>
 
-    <select id="getAllLayConfigModifiedRecord" resultType="SysLayconfig">
+    <select id="getAllLayConfigModifiedRecord" resultType="com.sec.device.pojo.SysLayconfig">
         select * from sys_layconfig
         where uimodifyflag = 1 AND
         hardmodifyflag = 0

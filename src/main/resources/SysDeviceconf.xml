@@ -26,13 +26,17 @@
         where mid = #{mid}
     </update>
 
-    <!--this.simccid = simccid;-->
-    <!--this.swver = swver;-->
     <update id="updateDeviceconf" parameterType="com.sec.device.pojo.SysDeviceconf">
         update sys_deviceconf
         set status = #{status},ip=#{ip},port=#{port},infoupdatecycle=#{infoupdatecycle},tickcycle=#{tickcycle},
         ledenable=#{ledenable},temporaryflag=#{temporaryflag},temporarygmt=#{temporarygmt},clearerr=#{clearerr},
         factory=#{factory},uimodifyflag=#{uimodifyflag},hardmodifyflag=#{hardmodifyflag},updatetime = #{updatetime}
+        where id = #{id}
+    </update>
+
+    <update id="updateCCidDeviceconf" parameterType="com.sec.device.pojo.SysDeviceconf">
+        update sys_deviceconf
+        set simccid = #{simccid},swver=#{swver}
         where id = #{id}
     </update>
 </mapper>

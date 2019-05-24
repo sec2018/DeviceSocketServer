@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Systimepos">
+    <insert id="insertSystimepos" parameterType="com.sec.device.pojo.Systimepos">
+        INSERT INTO systimepos(id,mid,one,onelng,onelat,two,twolng,twolat,three,threelng,threelat,four,fourlng,fourlat,five,fivelng,fivelat,six,sixlng,sixlat,seven,sevenlng,sevenlat,eight,eightlat,eightlng,nine,ninelat,ninelng,ten,tenlat,tenlng,eleven,elevenlat,elevenlng,twelve,twelvelat,twelvelng)
+        VALUES(0,#{mid},#{one},#{onelng},#{onelat},#{two},#{twolng},#{twolat},#{three},#{threelng},#{threelat},#{four},#{fourlng},#{fourlat},#{five},#{fivelng},#{fivelat},#{six},#{sixlng},#{sixlat},#{seven},#{sevenlng},#{sevenlat},#{eight},#{eightlat},#{eightlng},#{nine},#{ninelat},#{ninelng},#{ten},#{tenlat},#{tenlng},#{eleven},#{elevenlat},#{elevenlng},#{twelve},#{twelvelat},#{twelvelng});
+    </insert>
+
+    <update id="updateSystimepos" parameterType="com.sec.device.pojo.Systimepos">
+        update systimepos set one=#{one},onelng=#{onelng},onelat=#{onelat},two=#{two},twolng=#{twolng},twolat=#{twolat},three=#{three},threelng=#{threelng},threelat=#{threelat},
+        four=#{four},fourlng=#{fourlng},fourlat=#{fourlat},five=#{five},fivelng=#{fivelng},fivelat=#{fivelat},six=#{six},sixlng=#{sixlng},sixlat=#{sixlat},seven=#{seven},sevenlng=#{sevenlng},
+        sevenlat=#{sevenlat},eight=#{eight},eightlat=#{eightlat},eightlng=#{eightlng},nine=#{nine},ninelat=#{ninelat},ninelng=#{ninelng},ten=#{ten},tenlat=#{tenlat},tenlng=#{tenlng},eleven=#{eleven},
+        elevenlat=#{elevenlat},elevenlng=#{elevenlng},twelve=#{twelve},twelvelat=#{twelvelat},twelvelng=#{twelvelng} where id=#{id}
+    </update>
+
+    <select id="selectSystimepos" parameterType="String" resultType="com.sec.device.pojo.Systimepos">
+        SELECT * FROM systimepos WHERE mid = #{mid}
+    </select>
+</mapper>

@@ -725,9 +725,11 @@ public class Server implements Runnable{
                                 //插入
                                 systimepos.setMid(mid);
                                 flag  = session.insert("insertSystimepos", systimepos) ==1?true:false;
+                                session.commit();
                             }else{
                                 //更新
                                 flag = session.update("updateSystimepos", systimepos) ==1?true:false;
+                                session.commit();
                             }
                             if(flag){
                                 Commandmap.get(mid).remove("com06");

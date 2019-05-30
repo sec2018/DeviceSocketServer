@@ -277,13 +277,17 @@ public class Server implements Runnable{
             if(listdeviceconf.size()>0){
                 for (SysDeviceconf sysDeviceconf:listdeviceconf) {
                     if(sysDeviceconf.getIp()!=null){
+                        redisService.remove("device_"+sysDeviceconf.getMid());
                         redisService.setpersist("device_"+sysDeviceconf.getMid(),Analyse.Command_03_Send(sysDeviceconf));
                     }
 					//查询命令04
+                    redisService.remove("04_"+sysDeviceconf.getMid());
 					redisService.setpersist("04_"+sysDeviceconf.getMid(),Analyse.Command_04_Send(sysDeviceconf.getMid()));
-					//查询命令05
+                    //查询命令05
+                    redisService.remove("05_"+sysDeviceconf.getMid());
 					redisService.setpersist("05_"+sysDeviceconf.getMid(),Analyse.Command_05_Send(sysDeviceconf.getMid()));
 					//查询命令06
+                    redisService.remove("06_"+sysDeviceconf.getMid());
 					redisService.setpersist("06_"+sysDeviceconf.getMid(),Analyse.Command_06_Send(sysDeviceconf.getMid()));
                 }
             }

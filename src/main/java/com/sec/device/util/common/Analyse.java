@@ -300,66 +300,93 @@ public class Analyse {
         byte[] v = new byte[4];
         //设置高位在前
         Mid = Integer.reverseBytes(Mid);
-        v = MuliScheduleCheck.intToByteArray(Mid);
-        String midstr = MuliScheduleCheck.bytesToHexString(v).toUpperCase();
+        v = ScheduleCheck.intToByteArray(Mid);
+        String midstr = ScheduleCheck.bytesToHexString(v).toUpperCase();
 
         //服务器IP地址
 //        String ip = "122.112.252.45";
         String ip = sysDeviceconf.getIp();
+        if(ip==null){
+            ip = "0.0.0.0";
+        }
         String[] iparr = ip.split("\\.");
         String ipres = "";
         for(int i=0;i<=3;i++){
             int a = Integer.parseInt(iparr[i]);
-            v = MuliScheduleCheck.intToByteArray(a);
-            ipres += MuliScheduleCheck.bytesToHexString(v).toUpperCase().substring(6,8);
+            v = ScheduleCheck.intToByteArray(a);
+            ipres += ScheduleCheck.bytesToHexString(v).toUpperCase().substring(6,8);
         }
         //端口号
 //        String port = "59999";
 //        int Port = Integer.parseInt(port);
-        int Port = sysDeviceconf.getPort();
+        int Port = 0;
+        if(sysDeviceconf.getPort() != null){
+            Port = sysDeviceconf.getPort();
+        }
         Port = Integer.reverseBytes(Port);
-        v = MuliScheduleCheck.intToByteArray(Port);
-        String portres = MuliScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
+        v = ScheduleCheck.intToByteArray(Port);
+        String portres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
         //投药信息上传周期
 //        int infoupdatecycle = 45;
-        int infoupdatecycle = sysDeviceconf.getInfoupdatecycle();
+        int infoupdatecycle = 0;
+        if(sysDeviceconf.getInfoupdatecycle() == null){
+            infoupdatecycle = sysDeviceconf.getInfoupdatecycle();
+        }
         infoupdatecycle = Integer.reverseBytes(infoupdatecycle);
-        v = MuliScheduleCheck.intToByteArray(infoupdatecycle);
-        String infoupdatecycleres = MuliScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
+        v = ScheduleCheck.intToByteArray(infoupdatecycle);
+        String infoupdatecycleres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
         //心跳周期
 //        int tickcycle = 10000;
-        int tickcycle = sysDeviceconf.getTickcycle();
+        int tickcycle = 0;
+        if(sysDeviceconf.getTickcycle() != null){
+            tickcycle = sysDeviceconf.getTickcycle();
+        }
         tickcycle = Integer.reverseBytes(tickcycle);
-        v = MuliScheduleCheck.intToByteArray(tickcycle);
-        String tickcycleres = MuliScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
+        v = ScheduleCheck.intToByteArray(tickcycle);
+        String tickcycleres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
         //LED使能
 //        int ledenable = 1;
-        int ledenable = sysDeviceconf.getLedenable();
+        int ledenable = 0;
+        if(sysDeviceconf.getLedenable() != null){
+            ledenable = sysDeviceconf.getLedenable();
+        }
         ledenable = Integer.reverseBytes(ledenable);
-        v = MuliScheduleCheck.intToByteArray(ledenable);
-        String ledenableres = MuliScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
+        v = ScheduleCheck.intToByteArray(ledenable);
+        String ledenableres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
         //临时投药标志
 //        int tempflag = 1;
-        int tempflag = sysDeviceconf.getTemporaryflag();
+        int tempflag = 0;
+        if(sysDeviceconf.getTemporaryflag() != null){
+            tempflag = sysDeviceconf.getTemporaryflag();
+        }
         tempflag = Integer.reverseBytes(tempflag);
-        v = MuliScheduleCheck.intToByteArray(tempflag);
-        String tempflagres = MuliScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
+        v = ScheduleCheck.intToByteArray(tempflag);
+        String tempflagres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
         //临时投药时间
 //        int tempgmt = 1561123123;
-        int tempgmt = (int)(sysDeviceconf.getTemporarygmt().getTime()/1000);
+        int tempgmt = 0;
+        if(sysDeviceconf.getTemporarygmt() != null){
+            tempgmt = (int)(sysDeviceconf.getTemporarygmt().getTime()/1000);
+        }
         tempgmt = Integer.reverseBytes(tempgmt);
-        v = MuliScheduleCheck.intToByteArray(tempgmt);
-        String tempgmtres = MuliScheduleCheck.bytesToHexString(v).toUpperCase();
+        v = ScheduleCheck.intToByteArray(tempgmt);
+        String tempgmtres = ScheduleCheck.bytesToHexString(v).toUpperCase();
         //clearErr  清除故障标志位
-        int clearErr = sysDeviceconf.getClearerr();
+        int clearErr = 0;
+        if(sysDeviceconf.getClearerr() != null){
+            clearErr = sysDeviceconf.getClearerr();
+        }
         clearErr = Integer.reverseBytes(clearErr);
-        v = MuliScheduleCheck.intToByteArray(clearErr);
-        String clearErrres = MuliScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
+        v = ScheduleCheck.intToByteArray(clearErr);
+        String clearErrres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
         //恢复出厂设置
-        int factory = sysDeviceconf.getFactory();
+        int factory = 0;
+        if(sysDeviceconf.getFactory() != null){
+            factory = sysDeviceconf.getFactory();
+        }
         factory = Integer.reverseBytes(factory);
-        v = MuliScheduleCheck.intToByteArray(factory);
-        String factoryres = MuliScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
+        v = ScheduleCheck.intToByteArray(factory);
+        String factoryres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
 
         resp = "3A"+midstr+"03"+"1200"+ipres+portres+infoupdatecycleres+tickcycleres+ledenableres+tempflagres+tempgmtres+clearErrres+factoryres+"0000"+"0D0A";
         return resp;

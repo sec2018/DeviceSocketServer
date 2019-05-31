@@ -329,7 +329,7 @@ public class Analyse {
         //投药信息上传周期
 //        int infoupdatecycle = 45;
         int infoupdatecycle = 0;
-        if(sysDeviceconf.getInfoupdatecycle() == null){
+        if(sysDeviceconf.getInfoupdatecycle() != null){
             infoupdatecycle = sysDeviceconf.getInfoupdatecycle();
         }
         infoupdatecycle = Integer.reverseBytes(infoupdatecycle);

@@ -24,7 +24,7 @@ public class RedisServiceImpl implements RedisService {
 
 	@Resource
     private RedisTemplate<String, ?> redisTemplate;
-	private String prefix = "secwatchdog_";
+	private String prefix = "aidog_";
 	private Expiration expire = Expiration.seconds(7200);//7200秒后数据过期
 	
     @Override

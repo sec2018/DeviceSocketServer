@@ -538,7 +538,13 @@ public class Server implements Runnable{
                         String clearErr = command04[9];
                         String factory = command04[10];
                         //收到响应
-                        CommandStatusmap.get(mid).put("com04",2);
+                        //正常先收到10命令后再收到04命令
+                        if(CommandStatusmap.get(mid)!=null){
+                            CommandStatusmap.get(mid).put("com04",2);
+                        }else{
+                            //没有收到10命令，直接收到04命令,直接处理
+
+                        }
                         //更新数据库
                         session = ssf.openSession();
                         //查询得到命令4后的逻辑
@@ -549,7 +555,9 @@ public class Server implements Runnable{
                                 break;
                             }
                             if(sysDeviceconf.getIp()!=null && sysDeviceconf.getIp()!=""){
-                                Commandmap.get(mid).remove("com04");
+                                if(Commandmap.get(mid) !=null){
+                                    Commandmap.get(mid).remove("com04");
+                                }
                                 redisService.remove("04_"+mid);
                             }else{
                                 //第一次从硬件拿到绑定的信息
@@ -573,17 +581,24 @@ public class Server implements Runnable{
                                 boolean flag = session.update("updateDeviceconf",sysDeviceconf)==1?true:false;
                                 session.commit();
                                 if(flag){
-                                    Commandmap.get(mid).remove("com04");
+                                    if(Commandmap.get(mid)!=null){
+                                        Commandmap.get(mid).remove("com04");
+                                    }
                                     redisService.remove("04_"+mid);
                                 }
                             }
-                            if(Commandmap.get(mid).size()==0){
+                            if(Commandmap.get(mid)!=null && Commandmap.get(mid).size()==0){
                                 answer = "close";
-                            }else{
+                            }else if(Commandmap.get(mid)==null){
+                                answer = "close";
+                            }
+                            else{
                                 answer = "";
                             }
                             //响应完成，删除
-                            CommandStatusmap.get(mid).remove("com04");
+                            if(CommandStatusmap.get(mid)!=null){
+                                CommandStatusmap.get(mid).remove("com04");
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             answer = "close";
@@ -598,7 +613,13 @@ public class Server implements Runnable{
                         String swver = command05[3];
                         String simccid = command05[4];
                         //收到响应
-                        CommandStatusmap.get(mid).put("com05",2);
+                        //正常先收到10命令后再收到05命令
+                        if(CommandStatusmap.get(mid)!=null){
+                            CommandStatusmap.get(mid).put("com05",2);
+                        }else{
+                            //没有收到10命令，直接收到05命令,直接处理
+
+                        }
                         //更新数据库
                         session = ssf.openSession();
                         //查询得到命令5后的逻辑
@@ -609,7 +630,9 @@ public class Server implements Runnable{
                                 break;
                             }
                             if(sysDeviceconf.getSimccid()!=null && sysDeviceconf.getSimccid()!=""){
-                                Commandmap.get(mid).remove("com05");
+                                if(Commandmap.get(mid) != null){
+                                    Commandmap.get(mid).remove("com05");
+                                }
                                 redisService.remove("05_"+mid);
                             }else{
                                 //第一次从硬件拿到绑定的信息
@@ -619,17 +642,24 @@ public class Server implements Runnable{
                                 boolean flag = session.update("updateCCidDeviceconf",sysDeviceconf)==1?true:false;
                                 session.commit();
                                 if(flag){
-                                    Commandmap.get(mid).remove("com05");
+                                    if(Commandmap.get(mid) != null){
+                                        Commandmap.get(mid).remove("com05");
+                                    }
                                     redisService.remove("05_"+mid);
                                 }
                             }
-                            if(Commandmap.get(mid).size()==0){
+                            if(Commandmap.get(mid)!=null && Commandmap.get(mid).size()==0){
                                 answer = "close";
-                            }else{
+                            }else if(Commandmap.get(mid)==null){
+                                answer = "close";
+                            }
+                            else{
                                 answer = "";
                             }
                             //响应完成，删除
-                            CommandStatusmap.get(mid).remove("com05");
+                            if(CommandStatusmap.get(mid)!=null){
+                                CommandStatusmap.get(mid).remove("com05");
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             answer = "close";
@@ -654,7 +684,13 @@ public class Server implements Runnable{
                         String time11 = command06[12];
                         String time12 = command06[13];
                         //收到响应
-                        CommandStatusmap.get(mid).put("com06",2);
+                        //正常先收到10命令后再收到06命令
+                        if(CommandStatusmap.get(mid)!=null){
+                            CommandStatusmap.get(mid).put("com06",2);
+                        }else{
+                            //没有收到10命令，直接收到06命令,直接处理
+
+                        }
                         //更新数据库
                         session = ssf.openSession();
                         //查询得到命令6后的逻辑
@@ -735,17 +771,21 @@ public class Server implements Runnable{
                                 flag = session.update("updateSystimepos", systimepos) ==1?true:false;
                                 session.commit();
                             }
-                            if(flag){
+                            if(flag && Commandmap.get(mid)!=null){
                                 Commandmap.get(mid).remove("com06");
                                 redisService.remove("06_"+mid);
                             }
-                            if(Commandmap.get(mid).size()==0){
+                            if(Commandmap.get(mid)!=null && Commandmap.get(mid).size()==0){
+                                answer = "close";
+                            }else if(Commandmap.get(mid)==null){
                                 answer = "close";
                             }else{
                                 answer = "";
                             }
                             //响应完成，删除
-                            CommandStatusmap.get(mid).remove("com06");
+                            if(CommandStatusmap.get(mid)!=null){
+                                CommandStatusmap.get(mid).remove("com06");
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             answer = "close";

@@ -151,6 +151,9 @@ public class Analyse {
             int res581 = res[25] >> 4;
             //投药寄存器状态
             int res582 = res[24] + (res[25]&0x0F)*256;
+            if(res582<0){
+                res582 = 256 + res582;
+            }
             System.out.println("轮询次数： "+res581);
             rescommand_10[9] = res581+"";
             System.out.println("投药寄存器状态： "+res582);
@@ -173,6 +176,9 @@ public class Analyse {
             //投药编号  1个字节      (第27个字节)
             v[3] = res[27];
             int res592 = ScheduleCheck.byteArrayToInt(v);
+            if(res592<0){
+                res592 = 256 + res592;
+            }
             System.out.println("投药编号： "+res592);
             rescommand_10[12] = res592+"";
 

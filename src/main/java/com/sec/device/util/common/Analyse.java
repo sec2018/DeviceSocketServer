@@ -118,7 +118,7 @@ public class Analyse {
 //            v[3] = res[19];
 //            int res56_latsecond = MuliScheduleCheck.byteArrayToInt(v);
 //            String res56 = res56_latdegree+"."+res56_latcent+res56_latsecond;
-            String res56 = res[16]+res[17]*256  +  res[18]/60.0 +res[19]/3600.0 +"";
+            String res56 = res[16]+res[17]*256  +  res[18]/100.00 +res[19]/10000.00 +"";
             System.out.println("维度： "+res56);
             rescommand_10[7] = res56;
             //经度  2个字节（小端模式）+1个字节+1个字节    (第21,22,23,24个字节)
@@ -134,7 +134,7 @@ public class Analyse {
 //            v[3] = res[23];
 //            int res57_latsecond = MuliScheduleCheck.byteArrayToInt(v);
 //            String res57 = res57_lngdegree+"."+res57_latcent+res57_latsecond;
-            String res57 = res[20]+res[21]*256  +  res[22]/60.0 +res[23]/3600.0 +"";
+            String res57 = res[20]+res[21]*256  +  res[22]/100.00 +res[23]/10000.00+"";
             System.out.println("经度： "+res57);
             rescommand_10[8] = res57;
  //           //投药寄存器状态  2个字节  小端模式   (第25，26个字节)
@@ -152,10 +152,10 @@ public class Analyse {
             //轮询次数  右移4位
             int res581 = res[25] >> 4;
             //投药寄存器状态
-            int res582 = res[24] + (res[25]&0x0F)*256;
-            if(res582<0){
-                res582 = 256 + res582;
-            }
+            int res582 = res[24]&0xFF + (res[25]&0x0F)*256;
+//            if(res[24]<0){
+//                res582 = 256 + res[24] + (res[25]&0x0F)*256;
+//            }
             System.out.println("轮询次数： "+res581);
             rescommand_10[9] = res581+"";
             System.out.println("投药寄存器状态： "+res582);

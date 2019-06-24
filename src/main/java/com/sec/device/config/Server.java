@@ -404,6 +404,11 @@ public class Server implements Runnable{
                         String grantgmt = command10[6];
                         String latitude = command10[7];
                         String longitude = command10[8];
+
+                        latitude =  Double.parseDouble(latitude) +(0.0000001 - Math.random()/1000000.00) + (0.0000001 + Math.random()/1000000.00) +"";
+                        longitude = Double.parseDouble(longitude) +(0.0000001 - Math.random()/1000000.00) + (0.0000001 + Math.random()/1000000.00) +"";
+                        // p_necklet_Ys[i] = p_necklet_Ys[i] + Math.random()/10000.00;
+
                         String cyclenum = command10[9];
                         String status = command10[10];
                         String gsm_signal_level = command10[11];
@@ -435,19 +440,27 @@ public class Server implements Runnable{
                             map_10.put("mid",mid);
                             map_10.put("status",Integer.parseInt(status));
 //							map_10.put("updatetime",new Date());
-                            if(type.equals("1")){
-                                boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
-                                session.commit();
-                                if(res02 && res03){
-                                    String command10_resp = Analyse.Command_10_Response(mid,true);
-                                    answer = "command10_"+mid+"_"+command10_resp;
-                                }
-                            }else{
-                                session.commit();
-                                if(res02){
-                                    String command10_resp = Analyse.Command_10_Response(mid,true);
-                                    answer = "command10_"+mid+"_"+command10_resp;
-                                }
+
+//                            if(type.equals("1")){
+//                                boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
+//                                session.commit();
+//                                if(res02 && res03){
+//                                    String command10_resp = Analyse.Command_10_Response(mid,true);
+//                                    answer = "command10_"+mid+"_"+command10_resp;
+//                                }
+//                            }else{
+//                                session.commit();
+//                                if(res02){
+//                                    String command10_resp = Analyse.Command_10_Response(mid,true);
+//                                    answer = "command10_"+mid+"_"+command10_resp;
+//                                }
+//                            }
+                            //均更新配置表状态
+                            boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
+                            session.commit();
+                            if(res02 && res03){
+                                String command10_resp = Analyse.Command_10_Response(mid,true);
+                                answer = "command10_"+mid+"_"+command10_resp;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

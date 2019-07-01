@@ -805,6 +805,110 @@ public class Server implements Runnable{
                         } finally {
                         }
                         break;
+                    case "07":
+                        String[] command07 = Analyse.Command_07_Receive(question);
+                        mid = command07[0];
+                        answer = mid;
+                        String command_07 = command07[1];
+                        String poslat_1 = command07[2];
+                        String poslng_1 = command07[3];
+                        String poslat_2 = command07[4];
+                        String poslng_2 = command07[5];
+                        String poslat_3 = command07[6];
+                        String poslng_3 = command07[7];
+                        String poslat_4 = command07[8];
+                        String poslng_4 = command07[9];
+                        String poslat_5 = command07[10];
+                        String poslng_5 = command07[11];
+                        String poslat_6 = command07[12];
+                        String poslng_6 = command07[13];
+                        String poslat_7 = command07[14];
+                        String poslng_7 = command07[15];
+                        String poslat_8 = command07[16];
+                        String poslng_8 = command07[17];
+                        String poslat_9 = command07[18];
+                        String poslng_9 = command07[19];
+                        String poslat_10 = command07[20];
+                        String poslng_10 = command07[21];
+                        String poslat_11 = command07[22];
+                        String poslng_11 = command07[23];
+                        String poslat_12 = command07[24];
+                        String poslng_12 = command07[25];
+
+                        //收到响应
+                        //正常先收到10命令后再收到07命令
+                        if(CommandStatusmap.get(mid)!=null){
+                            CommandStatusmap.get(mid).put("com07",2);
+                        }else{
+                            //没有收到10命令，直接收到07命令,直接处理
+
+                        }
+                        //更新数据库
+                        session = ssf.openSession();
+                        //查询得到命令6后的逻辑
+                        try{
+                            Systimepos systimepos = session.selectOne("selectSystimepos",mid);
+                            if(systimepos==null) {
+                                //插入逻辑
+                                systimepos = new Systimepos();
+                            }
+                            systimepos.setOnelat(poslat_1);
+                            systimepos.setOnelng(poslng_1);
+                            systimepos.setTwolat(poslat_2);
+                            systimepos.setTwolng(poslng_2);
+                            systimepos.setThreelat(poslat_3);
+                            systimepos.setThreelng(poslng_3);
+                            systimepos.setFourlat(poslat_4);
+                            systimepos.setFourlng(poslng_4);
+                            systimepos.setFivelat(poslat_5);
+                            systimepos.setFivelng(poslng_5);
+                            systimepos.setSixlat(poslat_6);
+                            systimepos.setSixlng(poslng_6);
+                            systimepos.setSevenlat(poslat_7);
+                            systimepos.setSevenlng(poslng_7);
+                            systimepos.setEightlat(poslat_8);
+                            systimepos.setEightlng(poslng_8);
+                            systimepos.setNinelat(poslat_9);
+                            systimepos.setNinelng(poslng_9);
+                            systimepos.setTenlat(poslat_10);
+                            systimepos.setTenlng(poslng_10);
+                            systimepos.setElevenlat(poslat_11);
+                            systimepos.setElevenlng(poslng_11);
+                            systimepos.setTwelvelat(poslat_12);
+                            systimepos.setTwelvelng(poslng_12);
+
+                            boolean flag = false;
+                            if(systimepos.getMid()==null){
+                                //插入
+                                systimepos.setMid(mid);
+                                flag  = session.insert("insertSystimepos", systimepos) ==1?true:false;
+                                session.commit();
+                            }else{
+                                //更新
+                                flag = session.update("updateSystimepos", systimepos) ==1?true:false;
+                                session.commit();
+                            }
+                            if(flag && Commandmap.get(mid)!=null){
+                                Commandmap.get(mid).remove("com07");
+                                redisService.remove("07_"+mid);
+                            }
+                            if(Commandmap.get(mid)!=null && Commandmap.get(mid).size()==0){
+                                answer = "close";
+                            }else if(Commandmap.get(mid)==null){
+                                answer = "close";
+                            }else{
+                                answer = "";
+                            }
+                            //响应完成，删除
+                            if(CommandStatusmap.get(mid)!=null){
+                                CommandStatusmap.get(mid).remove("com07");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            answer = "close";
+                        } finally {
+                        }
+                        break;
                     default:
                         answer = "close";
                 }

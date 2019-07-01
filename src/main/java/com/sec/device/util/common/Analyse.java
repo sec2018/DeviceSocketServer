@@ -90,7 +90,7 @@ public class Analyse {
             //电池电压  1个字节      (第11个字节)
             v[3] = res[10];
             int res53 = MuliScheduleCheck.byteArrayToInt(v);
-            double res53_voltage = res53/10.0;
+            double res53_voltage = (300+res53)/100.00;
             System.out.println("电池电压： "+res53_voltage);
             rescommand_10[4] = res53_voltage+"";
             //故障信息  1个字节      (第12个字节)
@@ -832,5 +832,131 @@ public class Analyse {
             System.out.println("CRC16： "+res6);
         }
         return rescommand_06;
+    }
+
+    //07命令   发送读取12次位置信息
+    public static String Command_07_Send(String mid){
+
+        String resp = "";
+        int Mid = Integer.parseInt(mid);
+
+        byte[] v = new byte[4];
+        //设置高位在前
+        Mid = Integer.reverseBytes(Mid);
+        v = MuliScheduleCheck.intToByteArray(Mid);
+        String midstr = MuliScheduleCheck.bytesToHexString(v).toUpperCase();
+        resp = "3A"+midstr+"07"+"0000"+"0D0A";
+        return resp;
+    }
+
+    //07命令    项圈响应解析
+    public static String[] Command_07_Receive(String hexstr){
+        if(hexstr.length()!=216){
+            return null;
+        }
+        String[] rescommand_07 = new String[26];
+        if(hexstr.substring(0,2).equals("3A") && hexstr.substring(212,216).equals("0D0A")) {
+            byte[] res = MuliScheduleCheck.hexStringToBytes(hexstr);
+            //07命令
+            //起始码，1个字节    (第1个字节)
+            String res1 = "0x" + hexstr.substring(0, 2);
+            System.out.println("开始标志： " + res1);
+            //设备地址码，4字节，mid   (第2,3,4,5个字节)
+            byte[] v = new byte[4];
+            for(int i=4,k=0;i>0;i--,k++){
+                v[k]=res[i];
+            }
+            int res2 = MuliScheduleCheck.byteArrayToInt(v);
+            System.out.println("设备地址码： "+res2);
+            rescommand_07[0] = res2+"";
+            //命令码，1个字节   (第6个字节)
+            String res3 = "0x"+hexstr.substring(10,12);
+            System.out.println("命令码： "+res3);
+            rescommand_07[1] = res3;
+            //position 1
+            //数据长度, 2个字节  小端模式  (第7,8个字节)
+            String res41 = res[6]+res[7]*256  +  res[8]/100.00 +res[9]/10000.00 +"";
+            rescommand_07[2] = res41;
+            String res42 = res[10]+res[11]*256  +  res[12]/100.00 +res[13]/10000.00+"";
+            System.out.println("position_1: 维度： "+res41 +" 经度： "+res42);
+            rescommand_07[3] = res42;
+
+            String res51 = res[14]+res[15]*256  +  res[16]/100.00 +res[17]/10000.00 +"";
+            rescommand_07[4] = res51;
+            String res52 = res[18]+res[19]*256  +  res[20]/100.00 +res[21]/10000.00+"";
+            System.out.println("position_2: 维度： "+res51 +" 经度： "+res52);
+            rescommand_07[5] = res52;
+
+            String res61 = res[22]+res[23]*256  +  res[24]/100.00 +res[25]/10000.00 +"";
+            rescommand_07[6] = res61;
+            String res62 = res[26]+res[27]*256  +  res[28]/100.00 +res[29]/10000.00+"";
+            System.out.println("position_3: 维度： "+res61 +" 经度： "+res62);
+            rescommand_07[7] = res62;
+
+            String res71 = res[30]+res[31]*256  +  res[32]/100.00 +res[33]/10000.00 +"";
+            rescommand_07[8] = res71;
+            String res72 = res[34]+res[35]*256  +  res[36]/100.00 +res[37]/10000.00+"";
+            System.out.println("position_4: 维度： "+res71 +" 经度： "+res72);
+            rescommand_07[9] = res72;
+
+            String res81 = res[38]+res[39]*256  +  res[40]/100.00 +res[41]/10000.00 +"";
+            rescommand_07[10] = res81;
+            String res82 = res[42]+res[43]*256  +  res[44]/100.00 +res[45]/10000.00+"";
+            System.out.println("position_5: 维度： "+res81 +" 经度： "+res82);
+            rescommand_07[11] = res82;
+
+            String res91 = res[46]+res[47]*256  +  res[48]/100.00 +res[49]/10000.00 +"";
+            rescommand_07[12] = res91;
+            String res92 = res[50]+res[51]*256  +  res[52]/100.00 +res[53]/10000.00+"";
+            System.out.println("position_6: 维度： "+res91 +" 经度： "+res92);
+            rescommand_07[13] = res92;
+
+            String res10_1 = res[54]+res[55]*256  +  res[56]/100.00 +res[57]/10000.00 +"";
+            rescommand_07[14] = res10_1;
+            String res10_2 = res[58]+res[59]*256  +  res[60]/100.00 +res[61]/10000.00+"";
+            System.out.println("position_7: 维度： "+res10_1 +" 经度： "+res10_2);
+            rescommand_07[15] = res10_2;
+
+            String res11_1 = res[62]+res[63]*256  +  res[64]/100.00 +res[65]/10000.00 +"";
+            rescommand_07[16] = res11_1;
+            String res11_2 = res[66]+res[67]*256  +  res[68]/100.00 +res[69]/10000.00+"";
+            System.out.println("position_8: 维度： "+res11_1 +" 经度： "+res11_2);
+            rescommand_07[17] = res11_2;
+
+            String res12_1 = res[70]+res[71]*256  +  res[72]/100.00 +res[73]/10000.00 +"";
+            rescommand_07[18] = res12_1;
+            String res12_2 = res[74]+res[75]*256  +  res[76]/100.00 +res[77]/10000.00+"";
+            System.out.println("position_9: 维度： "+res12_1 +" 经度： "+res12_2);
+            rescommand_07[19] = res12_2;
+
+            String res13_1 = res[78]+res[79]*256  +  res[80]/100.00 +res[81]/10000.00 +"";
+            rescommand_07[20] = res13_1;
+            String res13_2 = res[82]+res[83]*256  +  res[84]/100.00 +res[85]/10000.00+"";
+            System.out.println("position_10: 维度： "+res13_1 +" 经度： "+res13_2);
+            rescommand_07[21] = res13_2;
+
+            String res14_1 = res[86]+res[87]*256  +  res[88]/100.00 +res[89]/10000.00 +"";
+            rescommand_07[22] = res14_1;
+            String res14_2 = res[90]+res[91]*256  +  res[92]/100.00 +res[93]/10000.00+"";
+            System.out.println("position_11: 维度： "+res14_1 +" 经度： "+res14_2);
+            rescommand_07[23] = res14_2;
+
+            String res15_1 = res[94]+res[95]*256  +  res[96]/100.00 +res[97]/10000.00 +"";
+            rescommand_07[24] = res15_1;
+            String res15_2 = res[98]+res[99]*256  +  res[100]/100.00 +res[101]/10000.00+"";
+            System.out.println("position_12: 维度： "+res15_1 +" 经度： "+res15_2);
+            rescommand_07[25] = res15_2;
+            //endregion
+
+            //CRC16 2个字节  小端模式         (第103，104个字节)
+            v[0] = 0;
+            v[1] = 0;
+            for(int i=103,k=2;i>101;i--,k++){
+                v[k]=res[i];
+            }
+            int res16 = MuliScheduleCheck.byteArrayToInt(v);
+            System.out.println("CRC16： "+res16);
+        }
+        return rescommand_07;
     }
 }

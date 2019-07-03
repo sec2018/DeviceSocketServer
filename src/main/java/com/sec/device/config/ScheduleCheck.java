@@ -17,26 +17,33 @@ public class ScheduleCheck {
                     Map.Entry entry = (Map.Entry) iter.next();
                     SocketChannel key = (SocketChannel)entry.getKey();
                     long time = System.currentTimeMillis();
+
+
                     //等待客户端答复，5秒没响应，重发一次，再5秒无反应,即为超时，关闭client
                     if(Server.heatTimeMap.get(key) !=null
                             && time - Server.heatTimeMap.get(key) > 5000  && time - Server.heatTimeMap.get(key) < 10000)
                     {
-                        if(Server.heatTimeflag.get(key).split(",")[0].equals("1")) {
-                            //服务端重发数据
-                            String[] values = Server.heatTimeMapData.get(key).split(",");
-                            String mid = Server.heatTimeflag.get(key).split(",")[1];
-                            String commandkey = "";
-                            for(int i=0;i<values.length;i++){
-                                commandkey = values[i].split("_")[0];
-                                if(Server.Commandmap.get(mid).containsKey(commandkey) && Server.CommandStatusmap.get(mid).get(commandkey) == 1){
-                                    String outMsg = values[i].split("_")[1];
-                                    ByteBuffer outBuf = ByteBuffer.wrap(outMsg.getBytes("UTF-8"));
-                                    outBuf.limit(outMsg.length());
-                                    Server.write(key,outBuf);
-                                    Thread.sleep(150);
+                        //空命令或错误命令
+                        if(Server.heatTimeflag.get(key).equals("invalid cmd")){
+
+                        }else{
+                            if(Server.heatTimeflag.get(key).split(",")[0].equals("1")) {
+                                //服务端重发数据
+                                String[] values = Server.heatTimeMapData.get(key).split(",");
+                                String mid = Server.heatTimeflag.get(key).split(",")[1];
+                                String commandkey = "";
+                                for(int i=0;i<values.length;i++){
+                                    commandkey = values[i].split("_")[0];
+                                    if(Server.Commandmap.get(mid).containsKey(commandkey) && Server.CommandStatusmap.get(mid).get(commandkey) == 1){
+                                        String outMsg = values[i].split("_")[1];
+                                        ByteBuffer outBuf = ByteBuffer.wrap(outMsg.getBytes("UTF-8"));
+                                        outBuf.limit(outMsg.length());
+                                        Server.write(key,outBuf);
+                                        Thread.sleep(150);
+                                    }
                                 }
+                                Server.heatTimeflag.put(key, 2 +","+Server.heatTimeflag.get(key).split(",")[1]);
                             }
-                            Server.heatTimeflag.put(key, 2 +","+Server.heatTimeflag.get(key).split(",")[1]);
                         }
                     }else if(Server.heatTimeMap.get(key) !=null
                             && time - Server.heatTimeMap.get(key) > 10000) {

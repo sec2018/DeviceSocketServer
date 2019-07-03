@@ -160,6 +160,11 @@ public class Server implements Runnable{
                 log.info("client {} connected", sc.getRemoteAddress());
                 sc.configureBlocking(false);
                 sc.register(selector,SelectionKey.OP_READ | SelectionKey.OP_WRITE, ByteBuffer.allocate(1024));
+
+                long time = System.currentTimeMillis();
+                heatTimeMapData.put(sc, "invalid cmd");
+                heatTimeMap.put(sc, time);
+                heatTimeflag.put(sc,"invalid cmd");
             }
         }catch (Exception e){
             log.error("error on accept connection", e);
@@ -188,7 +193,7 @@ public class Server implements Runnable{
                     if (rs.endsWith("\n")) {
                         break;
                     }
-                    String answer = getAnswer(rs);
+                    String answer = getAnswer(rs,sc);
                     queue.add(answer);
                     //断开客户端
                     if("close".equalsIgnoreCase(answer)){
@@ -298,7 +303,7 @@ public class Server implements Runnable{
         }
     }
 
-    private String getAnswer(String questiontemp){
+    private String getAnswer(String questiontemp,SocketChannel sc){
         String answer = null;
         Connection conn = null;
         PreparedStatement st = null;

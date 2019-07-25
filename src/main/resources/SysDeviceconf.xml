@@ -8,10 +8,7 @@
 
     <update id="updateDeviceconfByMid" parameterType="Map">
         update sys_deviceconf
-        set uimodifyflag = 0 AND
-        factory = 0 AND
-        hardmodifyflag = 0 AND
-        updatetime = #{updatetime}
+        set uimodifyflag = 0,factory = 0,hardmodifyflag = 0,updatetime = #{updatetime}
         where mid = #{mid}
     </update>
 

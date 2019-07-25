@@ -580,3 +580,219 @@ public class MuliServer implements Runnable{
 		}
 	}
 }
+
+
+
+
+
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/117
+.132.192.86:64590]:3A13270000101400041C7600E014395D1F000C107900210E01001A01E1B80
+D0A
+开始标志： 0x3A
+设备地址码： 10003
+命令码： 0x10
+数据长度： 20
+投药类型： 4
+温度： 28
+电池电压： 4.18
+故障信息： 0
+当前投药时间GMT： 1564021984
+维度： 31.1216
+经度： 121.3314
+轮询次数： 0
+投药寄存器状态： 1
+gsm信号强度： 26
+投药编号： 1
+CRC16： 47329
+0x0D
+0x0A
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/117
+.132.192.86:64590]:3A132700000337CA0D0A
+开始标志： 0x3A
+设备地址码： 10003
+命令码： 0x03
+java.nio.channels.SocketChannel[connected ishut oshut local=/192.168.0.192:59999
+ remote=/117.132.192.86:64590] 的客户端回复时间超时，连接关闭！
+2019-07-25 10:44:46.644 INFO  [] [] com.sec.device.config.Server - client /223.1
+04.254.255:31309 connected
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/223
+.104.254.255:31309]:3A13270000101400041D7700D216395D1F000C107900210E01001801F5C2
+0D0A
+开始标志： 0x3A
+设备地址码： 10003
+命令码： 0x10
+数据长度： 20
+投药类型： 4
+温度： 29
+电池电压： 4.19
+故障信息： 0
+当前投药时间GMT： 1564022482
+维度： 31.1216
+经度： 121.3314
+轮询次数： 0
+投药寄存器状态： 1
+gsm信号强度： 24
+投药编号： 1
+CRC16： 49909
+0x0D
+0x0A
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/223
+.104.254.255:31309]:3A1327000002F70B0D0A
+开始标志： 0x3A
+设备地址码： 10003
+命令码： 0x02
+2019-07-25 10:52:39.711 INFO  [] [] com.sec.device.config.Server - client /221.1
+78.124.157:41621 connected
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/221
+.178.124.157:41621]:3A13270000101400001C7810D216395D1F000C107900210E01001B0C6AF1
+0D0A
+开始标志： 0x3A
+设备地址码： 10003
+命令码： 0x10
+数据长度： 20
+投药类型： 0
+温度： 28
+电池电压： 4.2
+故障信息： 16
+当前投药时间GMT： 1564022482
+维度： 31.1216
+经度： 121.3314
+轮询次数： 0
+投药寄存器状态： 1
+gsm信号强度： 27
+投药编号： 12
+CRC16： 61802
+0x0D
+0x0A
+java.nio.channels.SocketChannel[connected ishut oshut local=/192.168.0.192:59999
+ remote=/221.178.124.157:41621] 的客户端回复时间超时，连接关闭！
+2019-07-25 11:00:43.650 INFO  [] [] com.sec.device.config.Server - client /221.1
+78.127.4:7684 connected
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/221
+.178.127.4:7684]:3A13270000101400001E7610D216395D1F000C107900210E01001A0CA9EB0D0
+A
+开始标志： 0x3A
+设备地址码： 10003
+命令码： 0x10
+数据长度： 20
+投药类型： 0
+温度： 30
+电池电压： 4.18
+故障信息： 16
+当前投药时间GMT： 1564022482
+维度： 31.1216
+经度： 121.3314
+轮询次数： 0
+投药寄存器状态： 1
+gsm信号强度： 26
+投药编号： 12
+CRC16： 60329
+0x0D
+0x0A
+java.nio.channels.SocketChannel[connected ishut oshut local=/192.168.0.192:59999
+ remote=/221.178.127.4:7684] 的客户端回复时间超时，连接关闭！
+2019-07-25 11:05:40.261 INFO  [] [] com.sec.device.config.Server - client /117.1
+32.197.250:35867 connected
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/117
+.132.197.250:35867]:3ACE56000010140000195F0098522D5D1F000C107900210E01001601C9B9
+0D0A
+开始标志： 0x3A
+设备地址码： 22222
+命令码： 0x10
+数据长度： 20
+投药类型： 0
+温度： 25
+电池电压： 3.95
+故障信息： 0
+当前投药时间GMT： 1563251352
+维度： 31.1216
+经度： 121.3314
+轮询次数： 0
+投药寄存器状态： 1
+gsm信号强度： 22
+投药编号： 1
+CRC16： 47561
+0x0D
+0x0A
+java.nio.channels.SocketChannel[connected ishut oshut local=/192.168.0.192:59999
+ remote=/117.132.197.250:35867] 的客户端回复时间超时，连接关闭！
+2019-07-25 11:08:32.183 INFO  [] [] com.sec.device.config.Server - client /223.1
+04.254.98:10934 connected
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/223
+.104.254.98:10934]:3A13270000101400001C7810D216395D1F000C107900210E01001A0CFAF00
+D0A
+开始标志： 0x3A
+设备地址码： 10003
+命令码： 0x10
+数据长度： 20
+投药类型： 0
+温度： 28
+电池电压： 4.2
+故障信息： 16
+当前投药时间GMT： 1564022482
+维度： 31.1216
+经度： 121.3314
+轮询次数： 0
+投药寄存器状态： 1
+gsm信号强度： 26
+投药编号： 12
+CRC16： 61690
+0x0D
+0x0A
+java.nio.channels.SocketChannel[connected ishut oshut local=/192.168.0.192:59999
+ remote=/223.104.254.98:10934] 的客户端回复时间超时，连接关闭！
+2019-07-25 11:13:29.966 INFO  [] [] com.sec.device.config.Server - client /117.1
+32.192.21:46184 connected
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/117
+.132.192.21:46184]:3ACE5600001014000019630098522D5D1F000C107900210E0100170105740
+D0A
+开始标志： 0x3A
+设备地址码： 22222
+命令码： 0x10
+数据长度： 20
+投药类型： 0
+温度： 25
+电池电压： 3.99
+故障信息： 0
+当前投药时间GMT： 1563251352
+维度： 31.1216
+经度： 121.3314
+轮询次数： 0
+投药寄存器状态： 1
+gsm信号强度： 23
+投药编号： 1
+CRC16： 29701
+0x0D
+0x0A
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/117
+.132.192.21:46184]:3ACE56000003183D0D0A
+开始标志： 0x3A
+设备地址码： 22222
+命令码： 0x03
+java.nio.channels.SocketChannel[connected ishut oshut local=/192.168.0.192:59999
+ remote=/117.132.192.21:46184] 的客户端回复时间超时，连接关闭！
+2019-07-25 11:16:36.687 INFO  [] [] com.sec.device.config.Server - client /117.1
+32.191.33:18692 connected
+java.nio.channels.SocketChannel[connected local=/192.168.0.192:59999 remote=/117
+.132.191.33:18692]:3A13270000101400001E7610D216395D1F000C107900210E0100190C59EB0
+D0A
+开始标志： 0x3A
+设备地址码： 10003
+命令码： 0x10
+数据长度： 20
+投药类型： 0
+温度： 30
+电池电压： 4.18
+故障信息： 16
+当前投药时间GMT： 1564022482
+维度： 31.1216
+经度： 121.3314
+轮询次数： 0
+投药寄存器状态： 1
+gsm信号强度： 25
+投药编号： 12
+CRC16： 60249
+0x0D
+0x0A
+java.nio.channels.SocketChannel[connected ishut oshut local=/192.168.0.192:59999
+ remote=/117.132.191.33:18692] 的客户端回复时间超时，连接关闭！

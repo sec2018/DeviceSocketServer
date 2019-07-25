@@ -512,7 +512,9 @@ public class Server implements Runnable{
                         mid = command03_receive[0];
                         answer = mid;
                         //收到响应
-                        CommandStatusmap.get(mid).put("com03",2);
+                        if(CommandStatusmap.size()!=0){
+                            CommandStatusmap.get(mid).put("com03",2);
+                        }
                         //更新数据库
                         session = ssf.openSession();
                         HashMap <String,Object> map_03 = new HashMap<String,Object>();
@@ -520,19 +522,23 @@ public class Server implements Runnable{
                         map_03.put("updatetime",new Date());
                         try{
                             boolean res03 = session.update("updateDeviceconfByMid", map_03) ==1?true:false;
-                            session.commit();
                             if(res03){
+                                session.commit();
                                 //说明项圈已读取基础配置，并且数据库已更新，删除
                                 redisService.remove("device_"+mid);
-                                Commandmap.get(mid).remove("com03");
+                                if(CommandStatusmap.size()!=0){
+                                    Commandmap.get(mid).remove("com03");
+                                }
                             }
-                            if(Commandmap.get(mid).size()==0){
+                            if(Commandmap.get(mid)!=null && Commandmap.get(mid).size()==0){
                                 answer = "close";
                             }else{
                                 answer = "";
                             }
                             //响应完成，删除
-                            CommandStatusmap.get(mid).remove("com03");
+                            if(CommandStatusmap.get(mid)!=null){
+                                CommandStatusmap.get(mid).remove("com03");
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             session.close();

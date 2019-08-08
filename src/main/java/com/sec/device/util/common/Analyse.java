@@ -348,13 +348,30 @@ public class Analyse {
         String infoupdatecycleres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
         //心跳周期
 //        int tickcycle = 10000;
-        int tickcycle = 0;
-        if(sysDeviceconf.getTickcycle() != null){
-            tickcycle = sysDeviceconf.getTickcycle();
+//        int tickcycle = 0;
+//        if(sysDeviceconf.getTickcycle() != null){
+//            tickcycle = sysDeviceconf.getTickcycle();
+//        }
+//        tickcycle = Integer.reverseBytes(tickcycle);
+//        v = ScheduleCheck.intToByteArray(tickcycle);
+//        String tickcycleres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
+        //基站定位信息
+        int bastimes = 0;
+        if(sysDeviceconf.getBastimes() != null){
+            bastimes = sysDeviceconf.getBastimes();
         }
-        tickcycle = Integer.reverseBytes(tickcycle);
-        v = ScheduleCheck.intToByteArray(tickcycle);
-        String tickcycleres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,4);
+        bastimes = Integer.reverseBytes(bastimes);
+        v = ScheduleCheck.intToByteArray(bastimes);
+        String bastimesres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
+        //gps定位信息
+        int gpstimes = 0;
+        if(sysDeviceconf.getGpstimes() != null){
+            gpstimes = sysDeviceconf.getGpstimes();
+        }
+        gpstimes = Integer.reverseBytes(gpstimes);
+        v = ScheduleCheck.intToByteArray(gpstimes);
+        String gpstimesres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
+
         //LED使能
 //        int ledenable = 1;
         int ledenable = 0;
@@ -399,7 +416,7 @@ public class Analyse {
         v = ScheduleCheck.intToByteArray(factory);
         String factoryres = ScheduleCheck.bytesToHexString(v).toUpperCase().substring(0,2);
 
-        resp = "3A"+midstr+"03"+"1200"+ipres+portres+infoupdatecycleres+tickcycleres+ledenableres+tempflagres+tempgmtres+clearErrres+factoryres+"0000"+"0D0A";
+        resp = "3A"+midstr+"03"+"1200"+ipres+portres+infoupdatecycleres+bastimesres+gpstimesres+ledenableres+tempflagres+tempgmtres+clearErrres+factoryres+"0000"+"0D0A";
         return resp;
     }
 

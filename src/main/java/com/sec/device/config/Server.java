@@ -441,6 +441,7 @@ public class Server implements Runnable{
                         session = ssf.openSession();
                         try{
                             boolean res02 = session.insert("insertSysLaytime", sysLaytime) ==1?true:false;
+                            session.commit();
                             HashMap <String,Object> map_10 = new HashMap<String,Object>();
                             map_10.put("mid",mid);
                             map_10.put("status",Integer.parseInt(status));
@@ -461,9 +462,15 @@ public class Server implements Runnable{
 //                                }
 //                            }
                             //均更新配置表状态
-                            boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
-                            session.commit();
-                            if(res02 && res03){
+                            Integer count = session.selectOne("selectOneSysDeviceconf",map_10);
+                            if(count == 1){
+                                boolean res03 = session.update("updatedeviceconfstatus",map_10) ==1?true:false;
+                                session.commit();
+                                if(res02 && res03){
+                                    String command10_resp = Analyse.Command_10_Response(mid,true);
+                                    answer = "command10_"+mid+"_"+command10_resp;
+                                }
+                            }else{
                                 String command10_resp = Analyse.Command_10_Response(mid,true);
                                 answer = "command10_"+mid+"_"+command10_resp;
                             }

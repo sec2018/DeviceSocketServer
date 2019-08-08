@@ -6,6 +6,10 @@
         SELECT * FROM sys_deviceconf WHERE mid = #{mid}
     </select>
 
+    <select id="selectOneSysDeviceconf" parameterType="Map" resultType="Integer">
+        SELECT count(*) FROM sys_deviceconf WHERE mid = #{mid}
+    </select>
+
     <update id="updateDeviceconfByMid" parameterType="Map">
         update sys_deviceconf
         set uimodifyflag = 0,factory = 0,hardmodifyflag = 0,updatetime = #{updatetime}
